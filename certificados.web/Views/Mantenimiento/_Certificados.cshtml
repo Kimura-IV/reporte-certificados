@@ -1,0 +1,83 @@
+﻿<div class="container mt-4">
+    <h2>Lista de Certificados</h2>
+    <button class="btn btn-success mb-3" onclick="agregarCertificado()">Agregar Nuevo Certificado</button>
+
+    <table id="tabla-certificado" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Evento</th>
+                <th>Formato</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Usuario Ingreso</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Aquí se cargarán los registros de certificados -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal para agregar/editar certificado -->
+<div class="modal fade" id="modal-editar-certificado" tabindex="-1" aria-labelledby="modal-editar-certificado-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-editar-certificado-label">Agregar Nuevo Certificado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para el certificado -->
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label for="certificado-titulo" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="certificado-titulo" placeholder="Ingresa el título del certificado">
+                    </div>
+                    <div class="col-6">
+                        <label for="certificado-evento" class="form-label">Evento</label>
+                        <input type="number" class="form-control" id="certificado-evento" placeholder="Ingresa el ID del evento">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label for="certificado-formato" class="form-label">Formato</label>
+                        <input type="number" class="form-control" id="certificado-formato" placeholder="Ingresa el ID del formato">
+                    </div>
+                    <div class="col-6">
+                        <label for="certificado-tipo" class="form-label">Tipo</label>
+                        <input type="text" class="form-control" id="certificado-tipo" value="Participación" disabled>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label for="certificado-estado" class="form-label">Estado</label>
+                        <select class="form-control" id="certificado-estado">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="certificado-usuarioingreso" class="form-label">Usuario Ingreso</label>
+                        <input type="text" class="form-control" id="certificado-usuarioingreso" placeholder="Usuario que ingresó el certificado">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label for="certificado-imagen" class="form-label">Imagen (JPG/PNG)</label>
+                        <input type="file" class="form-control" id="certificado-imagen" accept="image/jpeg, image/png">
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btn-guardar-cambios">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>

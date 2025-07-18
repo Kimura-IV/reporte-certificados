@@ -1,0 +1,214 @@
+﻿@section Scripts {
+    <script src="~/js/actaAsistencia.js"></script>
+}
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active text-dark" id="actas-tab" data-bs-toggle="tab" data-bs-target="#nav-actas" type="button" role="tab" aria-controls="nav-actas" aria-selected="false">Actas</button>
+    </li>
+
+    <li class="nav-item" role="presentation">
+        <button class="nav-link text-dark" id="home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Registrar</button>
+    </li>
+
+    <li class="nav-item" role="presentation">
+        <button class="nav-link text-dark" id="search-tab" data-bs-toggle="tab" data-bs-target="#nav-search" type="button" role="tab" aria-controls="nav-search" aria-selected="false">Buscar</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="nav-tabContent">
+    <!--TAB DE ACTAS -->
+    <div class="tab-pane fade show active" id="nav-actas" role="tabpanel" aria-labelledby="actas-tab" tabindex="0">
+        <div class="container mt-4">
+            <center>
+                <div class="p-3 w-50 my-2 bg-white shadow-sm">
+                    <label for="eventoActaAsistenciaAll" class="form-label">
+                        Seleccione el Evento
+                    </label>
+                    <div class="input-group my-2"> 
+                            <select class="form-select" id="eventoActaAsistenciaAll" required>
+                                <!-- Opciones serán cargadas dinámicamente -->
+                            </select> 
+                        <button class="btn btn-primary" type="button" onclick="cargarActaAsistencia()">Buscar</button>
+                    </div>
+                </div>
+            </center>
+            <br />
+            <br />
+            <table id="tabla-actas" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id Acta</th>
+                        <th>Id Evento</th>
+                        <th>Evento</th>
+                        <th>F. Ingreso</th>
+                        <th>U. Ingreso</th>
+                        <th>Acciones</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se cargarán los registros de personas -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--TAB DE REGISTRAR-->
+    <div class="tab-pane fade" id="nav-home" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+       <center>
+            <div class="mx-5 my-2 justify-content-start card w-50">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Registro del Acta de Asistencia</h5>
+                </div>
+                <div class="card-body justify-content-lg-start">
+                    <form onsubmit="return agregarActaAsistencia(event)">
+                        <!-- Selección de Evento -->
+                        <div class="mb-3 text-start">
+                            <label for="evento" class="form-label">Temática</label>
+                            <select class="form-select" id="eventoActaAsistencia" required>
+                            </select>
+                        </div>
+
+                        <!-- Nombre de Usuario -->
+                        <div class="mb-3 text-start">
+                            <label for="nombre" class="form-label">Nombre de Usuario</label>
+                            <input type="text" class="form-control" id="nombreUsuario"  disabled >
+                        </div>
+
+                        <!-- Fecha -->
+                        <div class="mb-3 text-start">
+                            <label for="fecha" class="form-label">Fecha</label>
+                            <input type="date" class="form-control" id="fecha" disabled>
+                        </div>
+
+                        <!-- Archivo PDF -->
+                        <div class="mb-3 text-start">
+                            <label for="archivo" class="form-label">Archivo PDF</label>
+                            <input type="file" class="form-control" id="archivoAsistencia" accept=".pdf" required>
+                            <div class="form-text text-muted">
+                                Nota: Solo se admiten archivos en formato PDF.
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary me-3">Guardar</button>
+                            <button type="button" class="btn btn-danger">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+       </center>
+       
+        
+    </div>
+
+    <!--TAB DE BUSQUEDA-->
+    <div class="tab-pane fade" id="nav-search" role="tabpanel" aria-labelledby="search-tab" tabindex="0">
+        <center>
+            <div class="p-3 w-50 my-2 bg-white shadow-sm">
+                <label for="buscar-acta" class="form-label">
+                    Buscar por ID del Acta
+                </label>
+                <div class="input-group my-2">
+                    <input type="number" id="buscar-actaAsistencia" class="form-control form-control-sm" placeholder="Ingresa el ID del rol" required>
+                    <button class="btn btn-primary" type="button" onclick="buscarActaAsistencia()">Buscar</button>
+                </div>
+            </div>
+        </center>
+
+        <!-- Resultados de la búsqueda -->
+        <div class="container mt-3">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Información de la Acta de Asistencia</h5>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="row mb-3"> 
+                                    <div class="col-md-6">
+                                        <label for="dominio" class="form-label">Dominio</label>
+                                        <input type="text" class="form-control" id="dominioA" disabled>
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <label for="tematica" class="form-label">Temática</label>
+                                        <input type="text" class="form-control" id="tematicaA" disabled>
+                                    </div> 
+                                 
+                                </div>
+
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="evento" class="form-label">Evento ID</label>
+                                        <input type="text" class="form-control" id="idEvento" disabled>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="actaId" class="form-label">Acta ID</label>
+                                        <input type="text" class="form-control" id="actaId" disabled>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="usuarioIngreso" class="form-label">Usuario Ingreso</label>
+                                        <input type="text" class="form-control" id="usuarioIngresoA" disabled>
+                                    </div>  
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="usuarioActualizacion" class="form-label">Usuario Actualización</label>
+                                        <input type="text" class="form-control" id="usuarioActualizacionA" disabled>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="fechaIngreso" class="form-label">Fecha Ingreso</label>
+                                        <input type="text" class="form-control" id="fechaIngresoA" disabled>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="fechaActualizacion" class="form-label">Fecha Actualización</label>
+                                        <input type="text" class="form-control" id="fechaActualizacionA" disabled>
+                                    </div>
+                               
+                                </div>
+                                 
+                                <div class="mb-3">
+                                    <label class="form-label">Documento Actual</label>
+                                    <div class="input-group">
+                                        <input id="nombreDocumento" type="text" class="form-control" value="" disabled>
+                                        <button id="btnDownload" class="btn btn-success" type="button" disabled>
+                                            <i class="bi bi-download"></i> Descargar
+                                        </button>
+                                    </div>
+                                </div>
+                                 
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--- MODAL PARA ELIMINAR EL ROL---->
+
+<div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionActa" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmarEliminacionActa">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro que desea eliminar este documento?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="confirmarEliminacionAsistencia()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/actaAsistencia.js" asp-append-version="true"></script>

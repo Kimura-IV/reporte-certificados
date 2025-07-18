@@ -1,0 +1,246 @@
+﻿:root {
+    --primary-color: #272626; /* Color principal */
+    --secondary-color: #1a73e8; /* Color de acento */
+    --accent-color: #4285f4; /* Color adicional */
+    --text-primary: #2c3e50; /* Color de texto principal */
+    --text-muted: #6c757d; /* Color de texto secundario */
+    --sidebar-width: 250px;
+    --header-height: 90px;
+    --main-menu: 60px;
+    --card-shadow: rgba(0, 0, 0, 0.1); /* Sombra para tarjetas */
+    --navbar-bg: #ffffff; /* Fondo del header */
+    --hover-bg: rgba(0, 0, 0, 0.1); /* Fondo al pasar el mouse */
+}
+
+/* Body */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f8f9fa;
+    overflow-x: hidden;
+    padding-top: var(--header-height); /* Para asegurar que el contenido no quede tapado por el header fijo */
+}
+
+/* Header Styles */
+.main-header {
+    height: 82px;
+    background: var(--navbar-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .08);
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: var(--sidebar-width);
+    z-index: 1030;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    transition: all .3s ease;
+}
+
+.logo-container {
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+}
+
+.logo {
+    height: 50px;
+    width: 210px;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #1e3464;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1040;
+    transition: transform .3s ease-in-out;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin; /* Opcional: para navegadores compatibles */
+}
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .sidebar .nav-item {
+        margin-bottom: 15px;
+    }
+
+.nav-link {
+    color: rgba(255, 255, 255, .85);
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    transition: background .3s ease;
+    border-radius: 4px;
+}
+
+    .nav-link:hover {
+        color: white;
+        background: var(--hover-bg);
+    }
+
+    .nav-link i {
+        margin-right: 10px;
+        font-size: 18px;
+    }
+
+.nav-item .nav-link.active {
+    border-bottom: 2px solid var(--secondary-color);
+    font-weight: bold;
+    margin-bottom: -18px;
+}
+
+/* Main Content */
+.main-content {
+    margin-top: var(--main-menu);
+    min-height: calc(100vh - var(--header-height));
+    width: 100vw;
+    transition: margin-left .3s ease;
+}
+
+.fade-in {
+    animation: fadeIn .5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Cards */
+.stat-card {
+    background: #fff;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 2px 4px var(--card-shadow);
+    transition: transform .3s ease, box-shadow .3s ease;
+    padding: 20px;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px var(--card-shadow);
+    }
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 24px;
+    background: var(--secondary-color);
+    color: white;
+}
+
+/* User Menu */
+.user-menu {
+    padding: 5px 15px;
+    border-radius: 50px;
+    background: rgba(0, 0, 0, .05);
+    transition: background .3s ease;
+}
+
+    .user-menu:hover {
+        background: rgba(0, 0, 0, .08);
+    }
+
+    .user-menu img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .main-header {
+        left: 0;
+        width: 100%;
+    }
+
+    .logo-container {
+        display: none;
+    }
+
+    .col-md-10 {
+        flex: 0 0 auto;
+        width: 95%;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+/* Hover Effects */
+.nav-link:hover {
+    background: #155ea3;
+    color: white;
+}
+
+.submenu .nav-link:hover {
+    background: #155ea3;
+}
+
+/* Submenu Animation */
+.submenu {
+    display: none;
+    background-color: ##1e3464;
+    padding-left: 10px;
+    border-radius: 5px;
+}
+
+    .submenu .nav-link {
+        font-size: 14px;
+        padding: 8px 20px;
+    }
+
+.arrow {
+    margin-left: auto;
+    transition: transform 0.2s ease-in-out;
+}
+
+    .arrow.open {
+        transform: rotate(180deg);
+    }

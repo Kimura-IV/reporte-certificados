@@ -1,0 +1,106 @@
+﻿<div class="container mt-4">
+    <!-- Tabs para el formulario y la tabla -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark active" id="tabla-tab" data-bs-toggle="tab" href="#tabla" role="tab" aria-controls="tabla" aria-selected="true">Listar Facilitadores</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark" id="formulario-tab" data-bs-toggle="tab" href="#formulario" role="tab" aria-controls="formulario" aria-selected="false">Agregar Facilitador</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark" id="csv-tab" data-bs-toggle="tab" href="#csv" role="tab" aria-controls="csv" aria-selected="false">Registro Masivo</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <br />
+        <!-- Contenido de la pestaña de la tabla -->
+        <div class="tab-pane fade show active m-1" id="tabla" role="tabpanel" aria-labelledby="tabla-tab">
+            <table id="tabla-facilitadores" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Cédula</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se mostrarán los datos de los facilitadores -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Contenido de la pestaña del formulario -->
+        <div class="tab-pane fade" id="formulario" role="tabpanel" aria-labelledby="formulario-tab">
+            <!-- Formulario de Agregar Facilitador -->
+            <form id="form-facilitador" class="border border-2 p-4 rounded" onsubmit="handleAgregarFacilitador(event)">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="facilitador-cedula" class="form-label">Cédula</label>
+                        <input type="text" class="form-control" id="facilitador-cedula" name="facilitador-cedula" placeholder="Ingresa la cédula" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="facilitador-usuario" class="form-label">Usuario Ingreso</label>
+                        <input type="text" class="form-control" id="facilitador-usuario" name="facilitador-usuario" value="admin" disabled required>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary mx-2">Guardar</button>
+                    <button type="reset" class="btn btn-secondary mx-2">Limpiar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Contenido de la pestaña para cargar CSV -->
+        <div class="tab-pane fade" id="csv" role="tabpanel" aria-labelledby="csv-tab">
+            <!-- Formulario de Cargar CSV -->
+            <form id="form-cargar-csv" class="border border-2 p-4 rounded" onsubmit="handleCargarCSV(event)">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="archivo-csv" class="form-label">Seleccionar archivo CSV</label>
+                        <input type="file" class="form-control" id="archivo-csv" name="archivo-csv" accept=".csv" required>
+                    </div>
+                </div>
+
+                <div class="text-center mb-3">
+                    <button type="submit" class="btn btn-primary">Cargar CSV</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de edición con formulario -->
+<div class="modal fade" id="modal-editar" tabindex="-1" aria-labelledby="modal-editar-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-editar-label">Editar Facilitador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario de Edición de Facilitador -->
+                <form id="form-editar-facilitador" class="border border-2 p-4 rounded" onsubmit="handleEditarFacilitador(event)">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="facilitador-cedula-editar" class="form-label">Cédula</label>
+                            <input type="text" class="form-control" id="facilitador-cedula-editar" name="facilitador-cedula-editar" placeholder="Ingresa la cédula" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="facilitador-usuario-editar" class="form-label">Usuario Ingreso</label>
+                            <input type="text" class="form-control" id="facilitador-usuario-editar" name="facilitador-usuario-editar" value="admin" disabled required>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary mx-2">Guardar Cambios</button>
+                        <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

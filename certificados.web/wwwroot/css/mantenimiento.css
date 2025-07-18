@@ -1,0 +1,16 @@
+﻿body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+}
+
+table {
+    margin-top: 20px;
+}
+
+#recordsTable_filter {
+    float: right;
+}
+
+#addRecordBtn {
+    margin-bottom: 10px;
+}

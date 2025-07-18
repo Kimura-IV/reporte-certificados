@@ -1,0 +1,198 @@
+﻿<div class="container mt-4">
+    <!-- Tabs para la vista de Formatos -->
+    <ul class="nav nav-tabs" id="formatosTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark active" id="tabla-formatos-tab" data-bs-toggle="tab" href="#tabla-formatos" role="tab" aria-controls="tabla-formatos" aria-selected="true">Listar Plantillas</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark" id="formulario-formatos-tab" data-bs-toggle="tab" href="#formulario-formatos" role="tab" aria-controls="formulario-formatos" aria-selected="false">Crear Plantilla</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="formatosTabContent">
+        <br />
+        <!-- Contenido de la pestaña de la tabla -->
+        <div class="tab-pane fade show active m-1" id="tabla-formatos" role="tabpanel" aria-labelledby="tabla-formatos-tab">
+            <table id="tabla-formato" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id Formato</th>
+                        <th>Nombre Plantilla</th>
+                        <th>Logo UG</th>
+                        <th>Linea Gráfica</th>
+                        <th>QR</th>
+                        <th>Usuario Ingreso</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se mostrarán los datos de los formatos -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Contenido de la pestaña del formulario -->
+        <div class="tab-pane fade" id="formulario-formatos" role="tabpanel" aria-labelledby="formulario-formatos-tab">
+            <!-- Formulario de Agregar Formato -->
+            <form id="form-formato" class="border border-2 p-4 rounded" onsubmit="handleAgregarFormato(event)">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="linea-grafica" class="form-label">Línea Gráfica (Subir archivo PNG)</label>
+                        <input type="file" accept="image/png" class="form-control" id="linea-grafica" name="linea-grafica" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="logo-ug" class="form-label">Logo UG (Subir archivo PNG)</label>
+                        <input type="file" accept="image/png" class="form-control" id="logo-ug" name="logo-ug" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nombre-plantilla" class="form-label">Nombre Plantilla</label>
+                        <input type="text" class="form-control" id="nombre-plantilla" name="nombre-plantilla" placeholder="Ingrese el nombre de la plantilla" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="qr" class="form-label">QR</label>
+                        <input type="file" accept="image/png" class="form-control" id="qr" name="qr" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="origen" class="form-label">Origen</label>
+                        <select class="form-select" id="origen" name="origen" required>
+                            <option value="">Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="tipo" class="form-label">Tipo</label>
+                        <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Ingrese el tipo" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label for="leyenda" class="form-label">Leyenda</label>
+                        <textarea class="form-control" id="leyenda" name="leyenda" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        Firma 1
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firma1-decanato" class="form-label">Decanato</label>
+                                <input type="text" class="form-control" id="firma1-decanato" name="firma1-decanato" placeholder="Ingrese el decanato" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="firma1-nombre" class="form-label">Firmante</label>
+                                <input type="text" class="form-control" id="firma1-nombre" name="firma1-nombre" placeholder="Ingrese el nombre del firmante" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-header bg-secondary text-white">
+                        Firma 2
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firma2-decanato" class="form-label">Decanato</label>
+                                <input type="text" class="form-control" id="firma2-decanato" name="firma2-decanato" placeholder="Ingrese el decanato" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="firma2-nombre" class="form-label">Firmante</label>
+                                <input type="text" class="form-control" id="firma2-nombre" name="firma2-nombre" placeholder="Ingrese el nombre del firmante" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-header bg-success text-white">
+                        Firma 3
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firma3-decanato" class="form-label">Decanato</label>
+                                <input type="text" class="form-control" id="firma3-decanato" name="firma3-decanato" placeholder="Ingrese el decanato" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="firma3-nombre" class="form-label">Firmante</label>
+                                <input type="text" class="form-control" id="firma3-nombre" name="firma3-nombre" placeholder="Ingrese el nombre del firmante" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary mx-2">Guardar</button>
+                    <button type="reset" class="btn btn-secondary mx-2">Limpiar</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal de edición -->
+<div class="modal fade" id="modal-editar-formato" tabindex="-1" aria-labelledby="modal-editar-formato-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-editar-formato-label">Editar Formato</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario de Edición de Formato -->
+                <form id="form-editar-formato" class="border border-2 p-4 rounded" onsubmit="handleEditarFormato(event)">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editar-id-formato" class="form-label">Id Formato</label>
+                            <input type="text" class="form-control" id="editar-id-formato" name="editar-id-formato" disabled>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editar-nombre-plantilla" class="form-label">Nombre Plantilla</label>
+                            <input type="text" class="form-control" id="editar-nombre-plantilla" name="editar-nombre-plantilla" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editar-logo-ug" class="form-label">Logo UG</label>
+                                <input type="file" accept="image/png" class="form-control" id="editar-logo-ug" name="editar-logo-ug">
+                                <img id="editar-logo-ug-preview" src="" alt="Logo UG Preview" class="mt-2" style="max-width: 100px;">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editar-linea-grafica" class="form-label">Línea Gráfica</label>
+                            <input type="file" accept="image/png" class="form-control" id="editar-linea-grafica" name="editar-linea-grafica">
+                            <img id="editar-linea-grafica-preview" src="" alt="Línea Gráfica Preview" class="mt-2" style="max-width: 100px;">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editar-qr" class="form-label">QR</label>
+                            <input type="file" accept="image/png" class="form-control" id="editar-qr" name="editar-qr">
+                            <img id="editar-qr-preview" src="" alt="QR Preview" class="mt-2" style="max-width: 100px;">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editar-usuario-ingreso" class="form-label">Usuario Ingreso</label>
+                            <input type="text" class="form-control" id="editar-usuario-ingreso" name="editar-usuario-ingreso" disabled value="admin">
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="formato-id-editar" name="formato-id-editar">
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary mx-2">Guardar Cambios</button>
+                        <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,76 @@
+﻿@section Scripts {
+    <script src="~/js/Facilitador.js"></script>
+}
+
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active text-dark" id="home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Insertar</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="nav-tabContent">
+
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="home-tab">
+        <div class="container py-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10">
+                    <div class="card border-0 shadow-lg">
+                        <div class="card-header bg-primary text-white py-3">
+                            <h5 class="card-title mb-0 text-center">
+                                <i class="fas fa-user-plus me-2"></i>
+                                Registro de Facilitador
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <!-- Sección de búsqueda -->
+                            <div class="mb-4">
+                                <label for="facilitadorAll" class="form-label fw-bold">
+                                    Seleccione un Usuario Facilitador
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <select class="form-select form-select-lg" id="facilitadorAll" required>
+                                        <!-- Opciones serán cargadas dinámicamente -->
+                                    </select>
+                                    <button class="btn btn-primary btn-lg" type="button" onclick="RegistrarFacilitador()">
+                                        <i class="fas fa-plus-circle me-2"></i>Vincular
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Alerta informativa -->
+                            <div class="alert alert-info d-flex align-items-center" role="alert">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <div>
+                                    Si no encuentra al usuario en la lista, por favor regístrelo primero en el
+                                    <a href="#" class="alert-link">módulo de mantenimiento</a>.
+                                </div>
+                            </div>
+
+                            <!-- Instrucciones -->
+                            <div class="card bg-light border-0 mt-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-clipboard-list me-2"></i>
+                                        Instrucciones
+                                    </h6>
+                                    <ol class="mb-0">
+                                        <li>Busque el usuario en la lista desplegable</li>
+                                        <li>Seleccione el usuario deseado</li>
+                                        <li>Haga clic en "Vincular" para registrarlo como Facilitador</li>
+                                        <li data-view="VerFacilitador">Podra observalo en la tabla de Facilitadores.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="~/js/Facilitador.js"></script>

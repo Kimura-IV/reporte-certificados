@@ -1,0 +1,84 @@
+﻿<div class="container mt-4">
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Participantes Aprobados</a>
+        </li>
+    </ul>
+    <br />
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <form id="formParticipante" class="border border-2 p-4 rounded mt-3">
+                <div class="row">
+                    <!-- Beneficiario Select -->
+                    <div class="col-12 col-md-4 mb-3">
+                        <label for="generar-beneficiario" class="form-label">Beneficiario</label>
+                        <select id="generar-beneficiario" class="form-select">
+
+                        </select>
+                    </div>
+
+                    <!-- Grupo Select -->
+                    <div class="col-12 col-md-4 mb-3">
+                        <label for="grupo" class="form-label">Grupo</label>
+                        <select id="grupo" class="form-select">
+                            <option selected>Selecciona Grupo</option>
+                            <!-- Opciones dinámicas se agregarán aquí -->
+                        </select>
+                    </div>
+
+                    <!-- Condición Select -->
+                    <div class="col-12 col-md-4 mb-3">
+                        <label for="formato" class="form-label">Formato</label>
+                        <select id="formato" class="form-select">
+                            <option selected>Selecciona Formato</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4 mb-3">
+                        <label for="generar-decanato" class="form-label">Decanato</label>
+                        <select id="generar-decanato" class="form-select">
+                            <option selected>Seleccionar Decanato</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <br />
+            <br />
+            <table class="table mt-4" id="tablaParticipantes">
+                <thead>
+                    <tr>
+                        <th>Cédula</th>
+                        <th>Nombres</th>
+                        <th>Asistencia</th>
+                        <th>Calificaciones</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar el PDF -->
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfModalLabel">Visualización del Certificado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <iframe id="pdfViewer" style="width:100%; height:500px;" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a id="downloadLink" class="btn btn-primary" download="certificado.pdf">Descargar</a>
+            </div>
+        </div>
+    </div>
+</div>

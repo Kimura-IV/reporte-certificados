@@ -1,0 +1,149 @@
+﻿<div class="container mt-4">
+    <!-- Tabs para el formulario y la tabla -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark active" id="tabla-tab" data-bs-toggle="tab" href="#tabla" role="tab" aria-controls="tabla" aria-selected="true">Listar Ciclos</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark" id="formulario-tab" data-bs-toggle="tab" href="#formulario" role="tab" aria-controls="formulario" aria-selected="false">Agregar Ciclo</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark" id="buscar-tab" data-bs-toggle="tab" href="#buscar" role="tab" aria-controls="buscar" aria-selected="false">Buscar Ciclo</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <br />
+        <!-- Contenido de la pestaña de la tabla -->
+        <div class="tab-pane fade show active m-1" id="tabla" role="tabpanel" aria-labelledby="tabla-tab">
+            <table id="tabla-ciclo" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Usuario Ingreso</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se mostrarán los datos de los ciclos -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Contenido de la pestaña del formulario -->
+        <div class="tab-pane fade" id="formulario" role="tabpanel" aria-labelledby="formulario-tab">
+            <!-- Formulario de Agregar Ciclo -->
+            <form id="form-ciclo" class="border border-2 p-4 rounded" onsubmit="handleAgregarCiclo(event)">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="ciclo-nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="ciclo-nombre" name="ciclo-nombre" placeholder="Ingresa el nombre del ciclo" required oninput="this.setCustomValidity('')"
+                               oninvalid="this.setCustomValidity('Por favor, complete este campo.')">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="ciclo-descripcion" class="form-label">Descripción</label>
+                        <input type="text" class="form-control" id="ciclo-descripcion" name="ciclo-descripcion" placeholder="Ingresa la descripción" required oninput="this.setCustomValidity('')"
+                               oninvalid="this.setCustomValidity('Por favor, complete este campo.')">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="ciclo-usuario" class="form-label">Usuario Ingreso</label>
+                        <input type="text" class="form-control" id="ciclo-usuario" name="ciclo-usuario" placeholder="Ingresa el usuario" disabled value="Admin" required>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary mx-2">Guardar</button>
+                    <button type="reset" class="btn btn-secondary mx-2">Limpiar</button>
+                </div>
+            </form>
+        </div>
+        <!-- Contenido de la pestaña de búsqueda -->
+        <div class="tab-pane fade" id="buscar" role="tabpanel" aria-labelledby="buscar-tab">
+            <!-- Formulario de búsqueda -->
+            <form id="form-buscar-ciclo" class="border border-2 p-4 rounded" onsubmit="handleBuscarCiclo(event)">
+                <div class="mb-3">
+                    <label for="buscar-id" class="form-label">ID Ciclo</label>
+                    <input type="text" class="form-control" id="buscar-id" name="buscar-id" placeholder="Ingresa el ID del ciclo" required>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary mx-2">Buscar</button>
+                    <button type="reset" class="btn btn-secondary mx-2">Limpiar</button>
+                </div>
+            </form>
+
+            <!-- Formulario para mostrar los resultados de la búsqueda -->
+            <form id="form-resultado-busqueda" class="border border-2 p-4 rounded mt-4 d-none">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id-ciclo" class="form-label">ID Ciclo</label>
+                        <input type="text" class="form-control" id="id-ciclo" name="id-ciclo" placeholder="ID del ciclo" disabled>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="nombre-ciclo" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre-ciclo" name="nombre-ciclo" placeholder="Nombre" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="descripcion-ciclo" class="form-label">Descripción</label>
+                        <input type="text" class="form-control" id="descripcion-ciclo" name="descripcion-ciclo" placeholder="Descripción" disabled>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="fcreacion-ciclo" class="form-label">Fecha Creación</label>
+                        <input type="text" class="form-control" id="fcreacion-ciclo" name="fcreacion-ciclo" placeholder="Fecha de creación" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="usuario-ingreso-ciclo" class="form-label">Usuario Ingreso</label>
+                        <input type="text" class="form-control" id="usuario-ingreso-ciclo" name="usuario-ingreso-ciclo" placeholder="Usuario" disabled>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal de edición con formulario -->
+<div class="modal fade" id="modal-editar" tabindex="-1" aria-labelledby="modal-editar-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-editar-label">Editar Ciclo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario de Edición de Ciclo -->
+                <form id="form-editar-ciclo" class="border border-2 p-4 rounded" onsubmit="handleEditarCiclo(event)">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="ciclo-nombre-editar" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="ciclo-nombre-editar" name="ciclo-nombre-editar" placeholder="Ingresa el nombre del ciclo" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="ciclo-descripcion-editar" class="form-label">Descripción</label>
+                            <input type="text" class="form-control" id="ciclo-descripcion-editar" name="ciclo-descripcion-editar" placeholder="Ingresa la descripción" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="ciclo-usuario-editar" class="form-label">Usuario Ingreso</label>
+                            <input type="text" class="form-control" id="ciclo-usuario-editar" name="ciclo-usuario-editar" placeholder="Usuario" disabled required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="hidden" id="ciclo-id-editar" name="ciclo-id-editar">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary mx-2">Guardar Cambios</button>
+                        <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,179 @@
+﻿<div class="container mt-4">
+    <!-- Tabs para el formulario y la tabla -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark active" id="tabla-tab" data-bs-toggle="tab" href="#tabla" role="tab" aria-controls="tabla" aria-selected="true">Listar Certificados</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark" id="formulario-tab" data-bs-toggle="tab" href="#formulario" role="tab" aria-controls="formulario" aria-selected="false">Crear Certificado</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-dark" id="generar-tab" data-bs-toggle="tab" href="#generar" role="tab" aria-controls="generar" aria-selected="false">Generar Certificado</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <br />
+        <!-- Contenido de la pestaña de la tabla -->
+        <div class="tab-pane fade show active m-1" id="tabla" role="tabpanel" aria-labelledby="tabla-tab">
+            <table id="tabla-certificados" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>IDCERTIFICADO</th>
+                        <th>TITULO</th>
+                        <th>IDEVENTO</th>
+                        <th>IDFORMATO</th>
+                        <th>TIPO</th>
+                        <th>ESTADO</th>
+                        <th>ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se mostrarán los datos de los certificados -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Contenido de la pestaña del formulario -->
+        <div class="tab-pane fade" id="formulario" role="tabpanel" aria-labelledby="formulario-tab">
+            <!-- Formulario de Agregar Certificado -->
+            <form id="form-certificado" class="border border-2 p-4 rounded" onsubmit="handleAgregarCertificado(event)">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="certificado-titulo" class="form-label">Título</label>
+                        <input type="text" class="
+" id="certificado-titulo" name="certificado-titulo" placeholder="Ingresa el título del certificado" required oninput="this.setCustomValidity('')"
+                               oninvalid="this.setCustomValidity('Por favor, complete este campo.')">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="certificado-imagen" class="form-label">Imagen</label>
+                        <input type="file" class="form-control" id="certificado-imagen" accept="image/*" oninput="this.setCustomValidity('')"
+                               oninvalid="this.setCustomValidity('Por favor, complete este campo.')">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="certificado-idevento" class="form-label">ID Evento</label>
+                        <select class="form-select" id="certificado-id-evento" name="certificado-id-evento" required oninput="this.setCustomValidity('')"
+                                oninvalid="this.setCustomValidity('Por favor, complete este campo.')">
+                            <option value="">Selecciona un id evento</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="certificado-idformato" class="form-label">ID Formato</label>
+                        <select class="form-select" id="certificado-id-formato" name="certificado-id-formato" required oninput="this.setCustomValidity('')"
+                                oninvalid="this.setCustomValidity('Por favor, complete este campo.')">
+                            <option value="">Selecciona id formato</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="certificado-tipo" class="form-label">Tipo</label>
+                        <input type="text" class="form-control" id="certificado-tipo" name="certificado-tipo" placeholder="Ingresa el tipo" required oninput="this.setCustomValidity('')"
+                               oninvalid="this.setCustomValidity('Por favor, complete este campo.')">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="certificado-estado" class="form-label">Estado</label>
+                        <select class="form-select" id="certificado-estado" name="certificado-estado" required oninput="this.setCustomValidity('')"
+                                oninvalid="this.setCustomValidity('Por favor, complete este campo.')">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="certificado-usuario" class="form-label">Usuario Ingreso</label>
+                        <input type="text" class="form-control" id="certificado-usuario" name="certificado-usuario" value="admin" disabled>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary mx-2">Guardar</button>
+                    <button type="reset" class="btn btn-secondary mx-2">Limpiar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Contenido de la pestaña de generar certificados -->
+        <div class="tab-pane fade" id="generar" role="tabpanel" aria-labelledby="generar-tab">
+            <!-- Formulario de Generar Certificados -->
+            <form id="form-generar-certificado" class="border border-2 p-4 rounded" onsubmit="handleGenerarCertificados(event)">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="generar-id-certificado" class="form-label">ID Certificado</label>
+                        <select class="form-select" id="generar-id-certificado" name="generar-id-certificado" required>
+                            <option value="">Selecciona un certificado</option>
+                            <!-- Opciones dinámicas -->
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="generar-docentes" class="form-label">Subir CSV de Docentes</label>
+                        <input type="file" class="form-control" id="generar-docentes" name="generar-docentes" accept=".csv" required>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary mx-2">Generar</button>
+                    <button type="reset" class="btn btn-secondary mx-2">Limpiar</button>
+                </div>
+            </form>
+
+            <!-- Contenedor para mostrar resultados -->
+            <div id="resultados-certificados" class="mt-4"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-editar-certificado" tabindex="-1" aria-labelledby="modal-editar-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-editar-label">Editar Certificado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario de Edición de Certificado -->
+                <form id="form-editar-certificado" class="border border-2 p-4 rounded" onsubmit="handleEditarCertificado(event)">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="certificado-id-editar" class="form-label">ID Certificado</label>
+                            <input type="text" class="form-control" id="certificado-id-editar" name="certificado-id-editar" disabled>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="certificado-titulo-editar" class="form-label">Título</label>
+                            <input type="text" class="form-control" id="certificado-titulo-editar" name="certificado-titulo-editar" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="certificado-idevento-editar" class="form-label">ID Evento</label>
+                            <input type="number" class="form-control" id="certificado-id-evento-editar" name="certificado-id-evento-editar" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="certificado-idformato-editar" class="form-label">ID Formato</label>
+                            <input type="number" class="form-control" id="certificado-id-formato-editar" name="certificado-idformato-editar" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="certificado-tipo-editar" class="form-label">Tipo</label>
+                            <input type="text" class="form-control" id="certificado-tipo-editar" name="certificado-tipo-editar" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="certificado-estado-editar" class="form-label">Estado</label>
+                            <select class="form-select" id="certificado-estado-editar" name="certificado-estado-editar" required>
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary mx-2">Guardar Cambios</button>
+                        <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

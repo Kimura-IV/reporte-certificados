@@ -1,0 +1,121 @@
+﻿@section Scripts {
+    <script src="~/js/Config.js"></script>
+}
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active text-dark" id="home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Mi usuario</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link text-dark" id="profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Persona</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="nav-tabContent">
+
+    <!-- Tab Usuario -->
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="home-tab">
+        <div class="card w-50 mx-3 my-2">
+            <div class="card-header">
+                Información de mi Usuario
+            </div>
+            <div class="card-body row justify-content-center">
+                <div class="col-md-8">
+                    <h5 class="mb-4 fw-bold">Información de Usuario</h5>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Email</label>
+                        <input type="email" class="form-control" id="email" disabled style="max-width: 400px;" required />
+                    </div>
+
+                    <!-- Roles -->
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Roles</label>
+                        <input type="text" id="rolesP" class="form-control" disabled style="max-width: 400px;" />
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Contraseña</label>
+                        <input type="password" class="form-control" id="password" disabled style="max-width: 400px;" required />
+                    </div>
+
+                    <!-- Repetir Contraseña -->
+                    <div class="mb-3 d-none" id="repetirPasswordContainer">
+                        <label class="form-label text-muted">Repetir Contraseña</label>
+                        <input type="password" class="form-control" id="repetirPassword" style="max-width: 400px;" required />
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-start gap-2">
+                        <!-- Botón para habilitar edición -->
+                        <button class="btn btn-primary" id="habilitarBtn" onclick="habilitarEdicion()">Habilitar Edición</button>
+
+                        <!-- Botón para guardar cambios -->
+                        <button class="btn btn-success d-none" id="guardarBtn" onclick="guardarUsuario()">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Persona -->
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="profile-tab">
+        <div class="card w-75 mx-3 my-2">
+            <div class="card-header">
+                Información Personal
+            </div>
+            <div class="card-body">
+                <div class="row row-cols-md-2 g-3">
+                    <!-- Nombres -->
+                    <div class="col">
+                        <label class="form-label text-muted">Nombres</label>
+                        <input type="text" class="form-control" id="nombres" disabled style="max-width: 300px;" />
+                    </div>
+
+                    <!-- Apellidos -->
+                    <div class="col">
+                        <label class="form-label text-muted">Apellidos</label>
+                        <input type="text" class="form-control" id="apellidos" disabled style="max-width: 300px;" />
+                    </div>
+
+                    <!-- Cédula -->
+                    <div class="col">
+                        <label class="form-label text-muted">Cédula</label>
+                        <input type="text" class="form-control" id="cedula" disabled style="max-width: 300px;" />
+                    </div>
+
+                    <!-- Edad -->
+                    <div class="col">
+                        <label class="form-label text-muted">Edad</label>
+                        <input type="text" class="form-control" id="edad" disabled style="max-width: 300px;" />
+                    </div>
+
+                    <!-- Género -->
+                    <div class="col">
+                        <label class="form-label text-muted">Género</label>
+                        <select class="form-control d-none" id="generoSelect" style="max-width: 300px;">
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                        <input type="text" class="form-control" id="genero" disabled style="max-width: 300px;" />
+                    </div>
+                    <input type="hidden" class="form-control" id="persona-rol" disabled style="max-width: 300px;" />
+                    <input type="hidden" class="form-control" id="usuarioIngreso" disabled style="max-width: 300px;" />
+                    <!-- Botones -->
+                    <div class="col-12 mt-4 d-flex gap-2">
+                        <button class="btn btn-primary" id="habilitarBtnPersona" onclick="habilitarEdicionPersona()">Habilitar Edición</button>
+                        <button class="btn btn-success d-none" id="guardarBtnPersona" onclick="confirmarEditarUsuarios()">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+<script src="~/js/Config.js" asp-append-version="true"></script>

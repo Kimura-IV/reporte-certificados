@@ -1,0 +1,132 @@
+﻿@section Scripts {
+    <script src="~/js/verFacilitador.js"></script>
+}
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active text-dark" id="home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Facilitador</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link text-dark" id="profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Buscar por ID</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="nav-tabContent">
+    <!-- VER PERSONA -->
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="home-tab">
+        <div class="container mt-4">
+            <table id="tabla-facilitador" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cédula</th>
+                        <th>Nombres</th>
+                        <th>Edad</th>
+                        <th>Género</th>
+                        <th>F. Ingreso</th> 
+                        <th>U. Ingreso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se cargarán los registros de personas -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- POR ID -->
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="profile-tab">
+        <center>
+            <div class="p-3 w-50 my-2 bg-white shadow-sm">
+                <label for="buscar-facilitador" class="form-label">
+                    Buscar por ID del Acta
+                </label>
+                <div class="input-group my-2">
+                    <input type="number" id="buscar-facilitador" class="form-control form-control-sm" placeholder="Ingresa el ID del rol" required>
+                    <button class="btn btn-primary" type="button" onclick="buscarFacilitador()">Buscar</button>
+                </div>
+            </div>
+        </center>
+        <!-- Resultados de la búsqueda -->
+        <div class="container mt-3">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Información del Facilitador</h5>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <!-- Primera fila -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="idExpositorFacilitador" class="form-label">ID Expositor</label>
+                                        <input type="text" class="form-control" id="idExpositorFacilitador" disabled>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="cedulaFacilitador" class="form-label">Cédula</label>
+                                        <input type="text" class="form-control" id="cedulaFacilitador" disabled>
+                                    </div>
+                                </div>
+
+                                <!-- Segunda fila -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="nombresFacilitador" class="form-label">Nombres</label>
+                                        <input type="text" class="form-control" id="nombresFacilitador" disabled>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="apellidosFacilitador" class="form-label">Apellidos</label>
+                                        <input type="text" class="form-control" id="apellidosFacilitador" disabled>
+                                    </div>
+                                </div>
+
+                                <!-- Tercera fila -->
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="edadFacilitador" class="form-label">Edad</label>
+                                        <input type="text" class="form-control" id="edadFacilitador" disabled>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="generoFacilitador" class="form-label">Género</label>
+                                        <input type="text" class="form-control" id="generoFacilitador" disabled>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="fechaCreacionFacilitador" class="form-label">Fecha Creación</label>
+                                        <input type="text" class="form-control" id="fechaCreacionFacilitador" disabled>
+                                    </div>
+                                </div>
+
+                                <!-- Cuarta fila -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="usuarioIngresoFacilitador" class="form-label">Usuario Ingreso</label>
+                                        <input type="text" class="form-control" id="usuarioIngresoFacilitador" disabled>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="usuarioActualizacionFacilitador" class="form-label">Usuario Actualización</label>
+                                        <input type="text" class="form-control" id="usuarioActualizacionFacilitador" disabled>
+                                    </div>
+                                </div>
+
+                                <!-- Quinta fila -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="fechaModificacionFacilitador" class="form-label">Fecha Modificación</label>
+                                        <input type="text" class="form-control" id="fechaModificacionFacilitador" disabled>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="fCreacionFacilitador" class="form-label">Fecha Creación (Expositor)</label>
+                                        <input type="text" class="form-control" id="fCreacionFacilitador" disabled>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="~/js/verFacilitador.js"></script>

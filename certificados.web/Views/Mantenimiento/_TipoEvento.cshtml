@@ -1,0 +1,331 @@
+﻿@section Scripts {
+    <script src="~/js/eventos.js"></script>
+}
+
+<ul class="nav nav-tabs" id="eventTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active text-dark" id="ver-eventos-tab" data-bs-toggle="tab" data-bs-target="#ver-eventos" type="button" role="tab" aria-controls="ver-eventos" aria-selected="true">Ver Eventos</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link text-dark" id="tipo-evento-tab" data-bs-toggle="tab" data-bs-target="#tipo-evento" type="button" role="tab" aria-controls="tipo-evento" aria-selected="false">Crear Tipo Evento</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link text-dark" id="buscar-evento-tab" data-bs-toggle="tab" data-bs-target="#buscar-evento" type="button" role="tab" aria-controls="buscar-evento" aria-selected="false">Buscar Evento</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="eventTabContent">
+    <div class="tab-pane fade show active" id="ver-eventos" role="tabpanel" aria-labelledby="ver-eventos-tab">
+        <div class="container mt-4">
+            <table id="tabla-evento" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tematica</th>
+                        <th>Dominio</th>
+                        <th>F. Inicio & Fin</th>
+                        <th>Modalidad</th>
+                        <th>Lugar</th> 
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se cargarán los registros de roles -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="buscar-evento" role="tabpanel" aria-labelledby="buscar-evento-tab">
+        <center>
+            <div class="p-3 w-50 my-2 bg-white shadow-sm">
+                <label for="buscar-rol" class="form-label ">
+                    Buscar por ID el Evento
+                </label>
+                <div class="input-group my-2">
+                    <input type="number" id="buscarevento" class="form-control form-control-sm" placeholder="Ingresa el ID del evento" required>
+                    <button class="btn btn-primary" type="button" onclick="buscarEvento()">  Buscar  </button>
+                </div>
+            </div>
+        </center> 
+            <div class="card mx-4 my-4 p-4 shadow-sm"> 
+                    <h5 class="card-title mb-4">Evento</h5>
+                    <div class="row g-3">
+                        
+                        <div class="col-md-6">
+                            <label for="tematica" class="form-label">Temática</label>
+                            <input type="text" class="form-control" id="tematicaE" disabled readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="dominio" class="form-label">Dominio</label>
+                            <input type="text" class="form-control" id="dominioE" disabled readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modalidad" class="form-label">Modalidad</label>
+                            <input type="text" class="form-control" id="modalidadE" disabled readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tipoEvento" class="form-label">Tipo Evento</label>
+                            <input type="text" class="form-control" id="tipoEventoE" disabled readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="decanato" class="form-label">Decanato</label>
+                            <input type="text" class="form-control" id="decanatoE" disabled readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lugar" class="form-label">Lugar</label>
+                            <input type="text" class="form-control" id="lugarE" disabled readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                            <input type="text" class="form-control" id="fechaInicioE" disabled readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="fechaFin" class="form-label">Fecha Fin</label>
+                            <input type="text" class="form-control" id="fechaFinE" disabled readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="fechaFin" class="form-label">Con Certificado</label>
+                            <input type="text" class="form-control" id="conCertificado" disabled readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="fechaFin" class="form-label">Horas</label>
+                            <input type="text" class="form-control" id="horasEvento" disabled readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipoEvento" class="form-label">U. Ingreso</label>
+                            <input type="text" class="form-control" id="uIngresoE" disabled readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipoEvento" class="form-label">U. Actualización</label>
+                            <input type="text" class="form-control" id="uActualizacionE" disabled readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipoEvento" class="form-label">F. Ingreso</label>
+                            <input type="text" class="form-control" id="fIngresoEvento" disabled readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipoEvento" class="form-label">F. Actualizacion</label>
+                            <input type="text" class="form-control" id="fActualizacionEvento" disabled readonly>
+                        </div>
+                    </div>
+                </div>  
+    </div>
+    <div class="tab-pane fade" id="tipo-evento" role="tabpanel" aria-labelledby="tipo-evento-tab">
+        <div class="container mt-4">
+            <div class="row">
+                <div class="d-flex justify-content-end mb-3">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarTipo">
+                        Agregar Tipo Evento
+                    </button>
+                </div>
+            </div>
+           
+            <table id="tabla-tipoevento" class=" mt-2 table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripcion</th>
+                        <th>F. Registro</th>
+                        <th>F. Actualizacion</th>
+                        <th>U. Ingreso</th> 
+                        <th>U. Actualización</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar tipo de evento -->
+<div class="modal fade" id="modalAgregarTipo" tabindex="-1" aria-labelledby="modalAgregarTipoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAgregarTipoLabel">Agregar Tipo de Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formAgregarTipo">
+                    <div class="mb-3">
+                        <label for="nombreTipo" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombreTipoC" placeholder="Ingrese el nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcionTipo" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcionTipoC" placeholder="Ingrese la descripción" rows="3" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                <button onclick="crearTipoEvento(event)" type="button" class="btn btn-primary" id="guardarTipo">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmación Eliminar Evento -->
+<div class="modal fade" id="modalEliminarEvento" tabindex="-1" aria-labelledby="modalEliminarEventoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminarEventoLabel">Eliminar Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar este evento? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmarEliminarEvento">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmación Eliminar Tipo de Evento -->
+<div class="modal fade" id="modalEliminarTipoEvento" tabindex="-1" aria-labelledby="modalEliminarTipoEventoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminarTipoEventoLabel">Eliminar Tipo de Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar este tipo de evento? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmarEliminarTipoEvento">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Agregar o Editar Evento -->
+<div class="modal fade" id="modalEditarEvento" tabindex="-1" aria-labelledby="modalEditarEventoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarEventoLabel">Editar Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarEvento"> 
+                    <input type="hidden" class="form-control" id="idEventoE" name="idEventoE" readonly disabled>
+                    <input type="hidden" class="form-control" id="ttipoEvento" name="ttipoEvento" readonly>
+                    <input type="hidden" class="form-control" id="idmodalidadE" name="modalidadE" readonly>
+                    <input type="hidden" class="form-control" id="idDecanatoE" name="IdDecanato" readonly>
+                    <input type="hidden" class="form-control" id="idGrupoE" name="IdGrupo" readonly>
+                    <div class="row mb-3"> 
+                        <div class="col-md-6">
+                            <label for="tematicaEvento" class="form-label">Temática</label>
+                            <input type="text" class="form-control" id="tematicaEvento" name="tematicaEvento" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tematicaEvento" class="form-label">Ciclo</label>
+                            <input type="text" class="form-control" id="periodoEvento" name="periodoEvento" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="dominio" class="form-label">Dominio</label>
+                            <input type="text" class="form-control" id="dominioEvento" name="dominioEvento" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lugarE" class="form-label">Lugar</label>
+                            <input type="text" class="form-control" id="lugarEvento" name="lugarEvento" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="FechaInicio" class="form-label">Fecha de Inicio</label>
+                            <input type="date" class="form-control" id="FechaInicio" name="FechaInicio" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="FechaFin" class="form-label">Fecha de Fin</label>
+                            <input type="date" class="form-control" id="FechaFin" name="FechaFin" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="Horas" class="form-label">Horas</label>
+                            <input type="number" class="form-control" id="Horas" min="0"  max="100" name="Horas" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                    
+                        <div class="col-md-4">
+                            <label for="conCertificado" class="form-label">Con Certificado</label>
+                            <select class="form-select" id="conCertificado" name="conCertificado" required>
+                                <option value="true">Sí</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="GrupoParticipante" class="form-label">Grupo Participante</label>
+                            <input type="text" class="form-control" id="grupoParticipante" name="grupoParticipante" disabled>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="U Actualizacion" class="form-label">U. Actualizacion</label>
+                            <input type="text" class="form-control" id="uActualizacion" name="uActualizacion" disabled>
+                        </div>
+                    </div>
+              
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button onclick="confirmarEditarEvento(event)" type="button" form="formEditarEvento" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal para Editar Tipo de Evento -->
+<div class="modal fade" id="modalEditarEventoTipo" tabindex="-1" aria-labelledby="modalEditarEventoTipoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarEventoTipoLabel">Editar Tipo de Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarTipoEvento">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="idTipoEventoE" class="form-label">ID del Tipo de Evento</label>
+                            <input type="text" class="form-control" id="idTipoEventoE" name="idTipoEventoE" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="usuarioActualizacion" class="form-label">Usuario Actualización</label>
+                            <input type="text" class="form-control" id="usuarioActualizacion" name="usuarioActualizacion" disabled>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="nombreTipoEvento" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombreTipoEvento" name="nombreTipoEvento" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="descripcionTipoEvento" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcionTipoEvento" name="descripcionTipoEvento" rows="3" required></textarea>
+                        </div>
+                    </div>
+                     
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                <button onclick="confirmarEditarTipoEvento(event)" type="submit" form="formEditarTipoEvento" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/js/eventos.js" asp-append-version="true"></script>
