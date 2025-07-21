@@ -9,6 +9,7 @@ using certificados.web.Models.DTO;
 using iText.Commons.Actions;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using LinqKit;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -145,10 +146,11 @@ namespace certificados.web.Controllers
             return Ok(certificadosService.ListarCertificados());
         }
 
-        [HttpGet("obtener")]
-        public ActionResult<ResponseApp> getCertificates()
+        [HttpPost("obtener")]
+        public ActionResult<ResponseApp> getCertificates([FromBody] FiltroCertificadoDTO filtro)
         {
-            var data = context.Tcertificado.ToList().Select(x =>
+            var iQueryableCertificado = GenerateIQueryable(filtro);
+            var data = iQueryableCertificado.ToList().Select(x =>
             {
                 return new
                 {
@@ -167,7 +169,11 @@ namespace certificados.web.Controllers
             });
             return Ok(Utils.OkResponse(data));
         }
-
+        [HttpGet("GetFiltrosCertificados")]
+        public ActionResult<ResponseApp> GetFiltrosCertificados()
+        {                
+            return Ok(certificadosService.GetFiltros());
+        }
         /*
          * Endpoint para LISTATAR CERTIFICADO
          */
@@ -482,5 +488,50 @@ namespace certificados.web.Controllers
                 document.Add(new Paragraph("\n"));
             }
         }
+        private IQueryable<Tcertificado> GenerateIQueryable(FiltroCertificadoDTO filtro)
+        {
+            var certificado = context.Tcertificado.AsQueryable();
+            if (filtro == null) return certificado;
+
+
+            var predicate = PredicateBuilder.New<Tcertificado>(true);
+            if (!string.IsNullOrEmpty(filtro.Tipo))
+            {
+                var tipoUpper = filtro.Tipo.ToUpper();
+                predicate = predicate.And(x => !string.IsNullOrEmpty(x.Tipo) && x.Tipo.ToUpper() == tipoUpper);
+            }
+
+            if (filtro.Estado != null)
+            {
+                predicate = predicate.And(x => x.Estado == filtro.Estado);
+            }
+
+            if (filtro.Emision != null)
+            {
+                predicate = predicate.And(x => x.FCreacion >= filtro.Emision.Value.Date && x.FCreacion < filtro.Emision.Value.Date.AddDays(1));
+            }
+
+            if (filtro.Plantilla != 0)
+            {
+                predicate = predicate.And(x => x.IdFormato == filtro.Plantilla);
+            }
+
+            if (!string.IsNullOrEmpty(filtro.Creador))
+            {
+                var creadorUpper = filtro.Creador.ToUpper();
+                predicate = predicate.And(x => !string.IsNullOrEmpty(x.UsuarioIngreso) && x.UsuarioIngreso == creadorUpper);
+            }
+            if (!string.IsNullOrEmpty(filtro.Firmante))
+            {
+                var firmanteUpper = filtro.Firmante.ToUpper();
+                predicate = predicate.And(x =>
+                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteUno) &&  x.TformatoCertificado.CargoFirmanteUno.ToUpper().Equals(firmanteUpper) ||
+                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteDos) && x.TformatoCertificado.CargoFirmanteDos.ToUpper().Equals(firmanteUpper) ||
+                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteTres) && x.TformatoCertificado.CargoFirmanteTres.ToUpper().Equals(firmanteUpper));
+            }
+
+            return certificado.AsExpandable().Where(predicate);
+        }
+
     }
 }

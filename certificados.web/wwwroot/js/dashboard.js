@@ -133,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function cargarVista(viewName) { 
+        filtroCargado = null
         fetch(`/Dashboard/${viewName}`)
             .then(response => {
                 if (response.ok) {

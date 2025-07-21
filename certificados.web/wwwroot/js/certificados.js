@@ -1,5 +1,13 @@
-﻿// Función para cargar datos de certificados
-
+﻿let objectFilter = {
+    Emision: '',
+    Plantilla: 0,
+    Firmante: '',
+    Tipo: '',
+    Creador: '',
+    Estado: ''
+};
+let filtroCargado = null;
+let myChart = null;
 function abrirModal(base64) {
     $('#largeModal').modal('show');
 
@@ -11,12 +19,16 @@ function cerrarModal() {
 }
 
 async function cargarDatosCertificados() {
+    if (filtroCargado == null) {
+        resetObject()
+    }
     try {
         const response = await Utils.httpRequest(
             `${Utils.path}/certificado/obtener`,
             {
-                method: "GET",
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(objectFilter)
             },
             true
         );
@@ -29,21 +41,24 @@ async function cargarDatosCertificados() {
         const activo = data.filter(x => x.estado);
         const inactivo = data.filter(x => !x.estado);
 
-        new Chart(ctx, {
+        if (myChart) {
+            myChart.destroy();
+        }
+        myChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: ['Activos', 'Inactivos'],
                 datasets: [
                     {
                         label: 'Certificados activos',
-                        data: [activo.length],
+                        data: [activo.length, 0],
                         borderWidth: 1,
                         borderColor: 'black',
                         backgroundColor: 'rgb(85, 164, 196)'
                     },
                     {
                         label: 'Certificados inactivos',
-                        data: [inactivo.length],
+                        data: [0, inactivo.length],
                         borderWidth: 1,
                         borderColor: 'black',
                         backgroundColor: 'rrgb(196, 185, 163)'
@@ -61,8 +76,7 @@ async function cargarDatosCertificados() {
 
         setTimeout(() => {
             const tablaBody = document.querySelector("#tabla-certificados tbody");
-            tablaBody.innerHTML = '';
-
+            tablaBody.innerHTML = ''
             if (response.cod === Utils.COD_OK && response.data.length > 0) {
                 response.data.forEach(certificado => {
                     const fila = `
@@ -116,8 +130,10 @@ async function cargarDatosCertificados() {
         }, 150);
 
     } catch (error) {
+        console.log(error)
         Utils.showToast("Error cargando datos iniciales", 'error');
     }
+    inicializarPantallaCertificados();
 }
 
 // Manejador para crear nuevo certificado
@@ -137,21 +153,21 @@ async function handleAgregarCertificado(event) {
 
     try {
 
-    const imagenBase64 = await convertirImagenABase64(file);
+        const imagenBase64 = await convertirImagenABase64(file);
         const base64Data = imagenBase64.split(",")[1];
 
 
-    const bodyRequest = {
-        Titulo: document.getElementById('certificado-titulo').value,
-        Imagen: base64Data,
-        IdEvento: parseInt(document.getElementById('certificado-id-evento').value),
-        IdFormato: parseInt(document.getElementById('certificado-id-formato').value),
-        Tipo: document.getElementById('certificado-tipo').value,
-        Estado: document.getElementById('certificado-estado').value,
-        UsuarioIngreso: userInfoConfig.idUsuario
-    };
+        const bodyRequest = {
+            Titulo: document.getElementById('certificado-titulo').value,
+            Imagen: base64Data,
+            IdEvento: parseInt(document.getElementById('certificado-id-evento').value),
+            IdFormato: parseInt(document.getElementById('certificado-id-formato').value),
+            Tipo: document.getElementById('certificado-tipo').value,
+            Estado: document.getElementById('certificado-estado').value,
+            UsuarioIngreso: userInfoConfig.idUsuario
+        };
 
-   
+
         const response = await Utils.httpRequest(
             `${Utils.path}/certificado/crear`,
             {
@@ -193,7 +209,7 @@ async function editarCertificado(id) {
         );
 
         if (response.cod === Utils.COD_OK) {
-            const certificados = response.data; 
+            const certificados = response.data;
             const certificado = certificados.find(cert => cert.idCertificado === id);
 
             if (certificado) {
@@ -534,4 +550,112 @@ function limpiarFormGeneraCertificado() {
     if (form) {
         form.classList.remove('was-validated');
     }
+}
+async function inicializarPantallaCertificados() {
+    if (filtroCargado == null) {
+            const responseFilters = await Utils.httpRequest(
+                `${Utils.path}/certificado/GetFiltrosCertificados`,
+                {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                },
+                true
+            );
+            const data = responseFilters.data;
+            if (responseFilters.cod === Utils.COD_OK) {
+                const selectPlantilla = $("#plantilla")
+                const selectFirmante = $("#firmante")
+                const selectTipo = $("#tipo")
+                const selectCreador = $("#creador")
+                data.personas.forEach(x => {
+                    const option = document.createElement("option");
+                    option.value = x.cedula;
+                    option.text = x.nombres;
+                    selectCreador.append(option)
+                })
+                data.plantillas.forEach(x => {
+                    const option = document.createElement("option");
+                    option.value = x.idFormato;
+                    option.text = x.nombrePlantilla;
+                    selectPlantilla.append(option)
+                })
+    
+                data.tipos.forEach(x => {
+                    const option = document.createElement("option");
+                    option.value = x;
+                    option.text = x;
+                    selectTipo.append(option)
+                })
+    
+                data.firmantes.forEach(x => {
+                    const option = document.createElement("option");
+                    option.value = x;
+                    option.text = x;
+                    selectFirmante.append(option)
+                })
+            }
+        filtroCargado = true;
+    }
+
+    function debounce(func, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        }
+    }
+    
+    const ejecutarBusqueda = debounce(function () {
+
+        objectFilter = {
+            Emision: $("#emision").val() ? new Date($("#emision").val()).toISOString() : null,
+            Plantilla: parseInt($("#plantilla").val()) || 0,
+            Firmante: $("#firmante").val() || null,
+            Tipo: $("#tipo").val() || null,
+            Creador: $("#creador").val() || null,
+            Estado: (() => {
+                const val = $("#estado").val();
+                console.log(val)
+                if (val === "true") return true;
+                if (val === "false") return false;
+                return null;
+            })()
+        };
+        cargarDatosCertificados()
+    });
+
+    function limpiarFiltros() {
+        $("#emision").val('');
+        $("#plantilla").val('');
+        $("#firmante").val('');
+        $("#tipo").val('');
+        $("#creador").val('');
+        $("#estado").val('');
+    }
+
+    function iniciarFiltros() {
+        $("#emision").off('input change').on('input change', ejecutarBusqueda);
+        $("#plantilla").off('change').on('change', ejecutarBusqueda);
+        $("#firmante").off('change').on('change', ejecutarBusqueda);
+        $("#tipo").off('change').on('change', ejecutarBusqueda);
+        $("#creador").off('change').on('change', ejecutarBusqueda);
+        $("#estado").off('change').on('change', ejecutarBusqueda);
+
+        $("#btnLimpiar").off('click').on('click', function () {
+            limpiarFiltros();
+            ejecutarBusqueda();
+        });
+    }
+
+    iniciarFiltros();
+}
+function resetObject() {
+    objectFilter = {
+        Emision: '',
+        Plantilla: 0,
+        Firmante: '',
+        Tipo: '',
+        Creador: '',
+        Estado: ''
+    };
 }
