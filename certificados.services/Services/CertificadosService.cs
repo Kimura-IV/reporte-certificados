@@ -1,4 +1,5 @@
 ﻿using certificados.dal.DataAccess;
+using certificados.models;
 using certificados.models.Entitys;
 using certificados.models.Entitys.dbo;
 using Newtonsoft.Json;
@@ -212,6 +213,11 @@ namespace certificados.services.Services
 
             return Utils.Utils.OkResponse(emailService.SendEmailIndividual(email, pdf));
         }
-
+        public  ResponseApp GetFiltros()
+        {                        
+            return Utils.Utils.OkResponse(tcertificadoDA.GetFiltros());
+        }
     }
+
+   
 }

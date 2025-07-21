@@ -1,16 +1,11 @@
-﻿using certificados.models.Context;
+﻿using certificados.models;
+using certificados.models.Context;
 using certificados.models.Entitys;
 using certificados.models.Entitys.auditoria;
 using certificados.models.Entitys.dbo;
 using certificados.models.Helper;
 using certificados.services.Utils;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace certificados.dal.DataAccess
 {
     public class TcertificadoDA(AppDbContext appDbContext)
@@ -177,8 +172,8 @@ namespace certificados.dal.DataAccess
             {
 
                 var listaCertificados = context.Tcertificado
-                    .Include(gp => gp.TformatoCertificado)  
-                    
+                    .Include(gp => gp.TformatoCertificado)
+
                     .Where(c => c.IdCertificado == idCertificado)
                     .FirstOrDefault();
                 if (listaCertificados == null)
@@ -221,7 +216,41 @@ namespace certificados.dal.DataAccess
             }
             return response;
         }
-
+        public FiltroCertificado GetFiltros()
+        {
+            FiltroCertificado filtros = new FiltroCertificado();
+            try
+            {
+                filtros.Plantillas = context.TformatoCertificado.Select(x => new TformatoCertificado
+                {
+                    idFormato = x.idFormato,
+                    NombrePlantilla = x.NombrePlantilla
+                }).ToList();
+                filtros.Tipos = context.Tcertificado.Where(x => !string.IsNullOrEmpty(x.Tipo)).Select(x => x.Tipo!).Distinct().ToList();
+                filtros.Firmantes = context.TformatoCertificado
+                    .Select(x => new { x.CargoFirmanteDos, x.CargoFirmanteTres, x.CargoFirmanteUno })
+                    .AsEnumerable() 
+                    .SelectMany(x => new[] { x.CargoFirmanteDos, x.CargoFirmanteTres, x.CargoFirmanteUno })
+                    .Where(nombre => !string.IsNullOrEmpty(nombre))
+                    .Select(nombre => nombre!).Distinct()
+                    .ToList(); 
+                filtros.Personas = (
+                from c in context.Tcertificado
+                join u in context.Tusuario on c.UsuarioIngreso equals u.idUsuario.ToString()
+                join p in context.Tpersona on u.Cedula equals p.Cedula
+                select new Tpersona
+                    {
+                        Cedula = u.idUsuario.ToString(),
+                        Nombres = p.Nombres + " " + p.Apellidos
+                    }
+                ).Distinct().ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"ERROR AL CARGAR LOS FILTROS: {ex.Message}");
+            }
+            return filtros;
+        }
         private void DetachIfTracked<T>(T entity, int id) where T : class
         {
             if (entity != null)
