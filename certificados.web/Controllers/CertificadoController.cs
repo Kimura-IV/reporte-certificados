@@ -150,10 +150,10 @@ namespace certificados.web.Controllers
         public ActionResult<ResponseApp> getCertificates([FromBody] FiltroCertificadoDTO filtro)
         {
             var iQueryableCertificado = GenerateIQueryable(filtro);
-            var data = iQueryableCertificado.ToList().Select(x =>
+            var data = iQueryableCertificado.Select(x => new
             {
-                return new
-                {
+               
+                
                     x.Estado,
                     x.FCreacion,
                     x.FModificacion,
@@ -164,9 +164,11 @@ namespace certificados.web.Controllers
                     x.Titulo,
                     x.UsuarioActualizacion,
                     x.UsuarioIngreso,
-                    pdfBase64 = Convert.ToBase64String(x.Imagen)
-                };
-            });
+                    x.TformatoCertificado.NombreFirmanteUno,
+                    x.TformatoCertificado.NombreFirmanteDos,
+                    x.TformatoCertificado.NombreFirmanteTres,
+                    pdfBase64 = Convert.ToBase64String(x.Imagen)               
+            }).ToList();
             return Ok(Utils.OkResponse(data));
         }
         [HttpGet("GetFiltrosCertificados")]
