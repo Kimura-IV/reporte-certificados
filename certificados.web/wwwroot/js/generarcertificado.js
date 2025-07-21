@@ -340,7 +340,9 @@ async function enviarCertificado(cedula) {
                     cedula: cedula,
                     idFormato: formato,
                     idDecanato: decanato,
-                    isEnviarEmail: true
+                    isEnviarEmail: true,
+                    idUsuario: userInfoCA.idUsuario
+
                 })
             },
             true

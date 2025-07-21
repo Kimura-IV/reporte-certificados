@@ -84,6 +84,9 @@ async function cargarDatosCertificados() {
                             <td>${certificado.idCertificado}</td>
                             <td>${certificado.titulo}</td>
                             <td>${certificado.fCreacion}</td>
+                            <td>${certificado.nombreFirmanteUno}</td>
+                            <td>${certificado.nombreFirmanteDos}</td>
+                            <td>${certificado.nombreFirmanteTres}</td>
                             <td>${certificado.estado ? 'Activo' : 'Inactivo'}</td>
                             <td>
                               <button class="btn btn-success" onclick="abrirModal('${certificado.pdfBase64}')">Ver certificado</button>
