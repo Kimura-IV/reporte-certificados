@@ -346,7 +346,7 @@ namespace certificados.web.Controllers
                     {
                         var logoImage = iTextSharp.text.Image.GetInstance((byte[])dataFormato.LogoUG);
                         logoImage.Alignment = iTextSharp.text.Image.ALIGN_CENTER;
-                        logoImage.ScaleAbsolute(250f, 60f);
+                        //logoImage.ScaleAbsolute(250f, 60f);
                         document.Add(logoImage);
                         agregarSaltodeLinea(document,1);
                     }

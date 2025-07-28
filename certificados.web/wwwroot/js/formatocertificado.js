@@ -1,4 +1,12 @@
 ﻿// Funcion para cargar datos de formatos
+const plantillaWidth = 1638;
+const plantillaHeight = 1157;
+
+const logoWidth = 192;
+const logoHeight = 192;
+
+const qrWidth = 150;
+const qrHeight = 150;
 async function cargarDatosFormatos() {
     try {
         const response = await Utils.httpRequest(
@@ -143,6 +151,22 @@ async function handleAgregarFormato(event) {
     event.preventDefault();
 
     try {
+
+        const errorPlantilla = await validSizeImages("linea-grafica", plantillaWidth, plantillaHeight, "linea grafica");
+        if (errorPlantilla) {
+            Utils.showToast(errorPlantilla, 'danger');
+            return;
+        }
+        const errorLogo = await validSizeImages("logo-ug", logoWidth, logoHeight, "Logo");
+        if (errorLogo) {
+            Utils.showToast(errorLogo, 'danger');
+            return;
+        }
+        const errorQR = await validSizeImages("qr", qrWidth, qrHeight, "qr");
+        if (errorQR) {
+            Utils.showToast(errorQR, 'danger');
+            return;
+        }
         // Convertir imágenes a Base64
         const lineaGrafica = document.getElementById('linea-grafica').files[0]
             ? await convertirABase64(document.getElementById('linea-grafica').files[0])
@@ -176,7 +200,7 @@ async function handleAgregarFormato(event) {
             Utils.showToast('Usuario no encontrado. Inicie sesión nuevamente.', 'danger');
             return;
         }
-
+        
         // Crear el diccionario formatoData
         const formatoData = {
             "NombrePlantilla": nombrePlantilla,
@@ -416,4 +440,31 @@ async function cargarDecanatos() {
         console.log(error)
         Utils.showToast("Error cargando datos iniciales", 'error');
     }
+}
+
+function validSizeImages(inputSelector, requiredWidth, requiredHeight, modelo) {
+    return new Promise((resolve) => {
+        const filePlantilla = $(`#${inputSelector}`)[0].files[0];
+        if (!filePlantilla) {
+            resolve(null);
+            return;
+        }
+
+        const img = new Image();
+        img.src = URL.createObjectURL(filePlantilla);
+
+        img.onload = function () {
+            URL.revokeObjectURL(img.src);
+            if (img.width !== requiredWidth || img.height !== requiredHeight) {
+                resolve(`La ${modelo} debe tener un ancho de ${requiredWidth}px y un alto de ${requiredHeight}px.`);
+            } else {
+                resolve(null);
+            }
+        };
+
+        img.onerror = function () {
+            URL.revokeObjectURL(img.src);
+            resolve('No se pudo cargar la imagen para validar tamaño.');
+        };
+    });
 }
