@@ -5,6 +5,7 @@ using certificados.models.Entitys.auditoria;
 using certificados.models.Entitys.dbo;
 using certificados.models.Helper;
 using certificados.services.Utils;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 namespace certificados.dal.DataAccess
 {
@@ -229,20 +230,20 @@ namespace certificados.dal.DataAccess
                 filtros.Tipos = context.Tcertificado.Where(x => !string.IsNullOrEmpty(x.Tipo)).Select(x => x.Tipo!).Distinct().ToList();
                 filtros.Firmantes = context.TformatoCertificado
                     .Select(x => new { x.CargoFirmanteDos, x.CargoFirmanteTres, x.CargoFirmanteUno })
-                    .AsEnumerable() 
+                    .AsEnumerable()
                     .SelectMany(x => new[] { x.CargoFirmanteDos, x.CargoFirmanteTres, x.CargoFirmanteUno })
                     .Where(nombre => !string.IsNullOrEmpty(nombre))
                     .Select(nombre => nombre!).Distinct()
-                    .ToList(); 
+                    .ToList();
                 filtros.Personas = (
                 from c in context.Tcertificado
                 join u in context.Tusuario on c.UsuarioIngreso equals u.idUsuario.ToString()
                 join p in context.Tpersona on u.Cedula equals p.Cedula
                 select new Tpersona
-                    {
-                        Cedula = u.idUsuario.ToString(),
-                        Nombres = p.Nombres + " " + p.Apellidos
-                    }
+                {
+                    Cedula = u.idUsuario.ToString(),
+                    Nombres = p.Nombres + " " + p.Apellidos
+                }
                 ).Distinct().ToList();
             }
             catch (Exception ex)
@@ -250,6 +251,105 @@ namespace certificados.dal.DataAccess
                 throw new Exception($"ERROR AL CARGAR LOS FILTROS: {ex.Message}");
             }
             return filtros;
+        }
+        public EstadisticaModel GetEstadistica(FiltroEstadistica filtro)
+        {
+            EstadisticaModel estadistica = new EstadisticaModel();
+            var certificadoIQueryable = context.Tcertificado.AsQueryable();
+            var predicate = PredicateBuilder.New<Tcertificado>(true);
+
+            if (filtro.FechaInicio != null)
+            {
+                predicate = predicate.And(x => x.FCreacion >= filtro.FechaInicio);
+            }
+            if (filtro.FechaFin != null)
+            {
+                predicate = predicate.And(x => x.FCreacion <= filtro.FechaFin);
+            }
+
+            if (!string.IsNullOrEmpty(filtro.Tipo))
+            {
+                var tipoUpper = filtro.Tipo.ToUpper();
+                predicate = predicate.And(x => !string.IsNullOrEmpty(x.Tipo) && x.Tipo.ToUpper() == tipoUpper);
+            }
+
+            if (filtro.Estado != null)
+            {
+                predicate = predicate.And(x => x.Estado == filtro.Estado);
+            }
+
+            if (filtro.Plantilla != 0)
+            {
+                predicate = predicate.And(x => x.IdFormato == filtro.Plantilla);
+            }
+
+            if (!string.IsNullOrEmpty(filtro.Creador))
+            {
+                var creadorUpper = filtro.Creador.ToUpper();
+                predicate = predicate.And(x => !string.IsNullOrEmpty(x.UsuarioIngreso) && x.UsuarioIngreso == creadorUpper);
+            }
+            if (!string.IsNullOrEmpty(filtro.Firmante))
+            {
+                var firmanteUpper = filtro.Firmante.ToUpper();
+                predicate = predicate.And(x =>
+                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteUno) && x.TformatoCertificado.CargoFirmanteUno.ToUpper().Equals(firmanteUpper) ||
+                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteDos) && x.TformatoCertificado.CargoFirmanteDos.ToUpper().Equals(firmanteUpper) ||
+                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteTres) && x.TformatoCertificado.CargoFirmanteTres.ToUpper().Equals(firmanteUpper));
+            }
+            certificadoIQueryable = certificadoIQueryable.AsExpandable().Where(predicate);
+
+
+            estadistica.Plantillas = certificadoIQueryable.Include(x => x.TformatoCertificado).GroupBy(x => x.TformatoCertificado.NombrePlantilla).Select(x => new Plantilla
+            {
+                NombrePlantilla = x.Key,
+                Count = x.Count()
+
+            }).ToList();
+
+            estadistica.Estados = certificadoIQueryable.GroupBy(x => x.Estado).Select(x => new Estado
+            {
+                Tipo = x.Key ? "Activo" : "Inactivo",
+                Count = x.Count()
+            }).ToList();
+
+            estadistica.LapsoDias = certificadoIQueryable.GroupBy(x => x.FCreacion.Date).Select(x => new LapsoDia
+            {
+                Dia = x.Key,
+                Count = x.Count()
+            }).ToList();
+
+            estadistica.LapsoSemanas = certificadoIQueryable
+             .AsEnumerable() 
+             .GroupBy(x => FirstDayOfWeek(x.FCreacion)) 
+             .Select(g => new LapsoSemana
+             {
+                 SemanaInicio = g.Key,
+                 Count = g.Count()
+             })
+             .OrderBy(x => x.SemanaInicio)
+             .ToList();
+
+            estadistica.LapsoAnios = certificadoIQueryable.GroupBy(x => x.FCreacion.Date.Year).Select(x => new LapsoAnio
+            {
+                Anio = x.Key,
+                Count = x.Count()
+            }).ToList();
+            estadistica.Firmantes = certificadoIQueryable.Select(x => new { x.TformatoCertificado.NombreFirmanteUno, x.TformatoCertificado.NombreFirmanteDos, x.TformatoCertificado.NombreFirmanteTres }).AsEnumerable()
+                .SelectMany(x => new[] { x.NombreFirmanteUno, x.NombreFirmanteDos, x.NombreFirmanteTres }).Where(x => !string.IsNullOrEmpty(x)).GroupBy(x => x).Select(x => new Firmante
+                {
+                    NombreFirmante = x.Key,
+                    Count = x.Count()
+                }).ToList();
+
+
+
+            return estadistica;
+        }
+        public static DateTime FirstDayOfWeek(DateTime date)
+        {
+            var diff = date.DayOfWeek - DayOfWeek.Monday;
+            if (diff < 0) diff += 7;
+            return date.Date.AddDays(-1 * diff);
         }
         private void DetachIfTracked<T>(T entity, int id) where T : class
         {

@@ -1,4 +1,5 @@
 ﻿using certificados.dal.DataAccess;
+using certificados.models;
 using certificados.models.Context;
 using certificados.models.Entitys;
 using certificados.models.Entitys.dbo;
@@ -11,6 +12,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using LinqKit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using System.Text.Json;
 
 namespace certificados.web.Controllers
@@ -534,6 +536,10 @@ namespace certificados.web.Controllers
 
             return certificado.AsExpandable().Where(predicate);
         }
-
+        [HttpPost("Estadistica")]
+        public ResponseApp GetEstadisticas([FromBody] FiltroEstadistica filtro)
+        {
+            return certificadosService.GetEstadistica(filtro);
+        }
     }
 }

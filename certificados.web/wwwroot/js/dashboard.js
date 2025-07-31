@@ -134,6 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarVista(viewName) { 
         filtroCargado = null
+        filtroCargadoEstadistica = null
         fetch(`/Dashboard/${viewName}`)
             .then(response => {
                 if (response.ok) {
