@@ -217,6 +217,11 @@ namespace certificados.services.Services
         {                        
             return Utils.Utils.OkResponse(tcertificadoDA.GetFiltros());
         }
+
+        public ResponseApp GetEstadistica(FiltroEstadistica filtro)
+        {
+            return Utils.Utils.OkResponse(tcertificadoDA.GetEstadistica(filtro));
+        }
     }
 
    

@@ -93,6 +93,11 @@ namespace certificados.web.Controllers
             return PartialView("~/Views/Certificacion/VerCertificados.cshtml");
 
         }
+        public IActionResult Estadistica()
+        {
+            return PartialView("~/Views/Certificacion/Estadistica.cshtml");
+
+        }
         public IActionResult Formatos()
         {
             return PartialView("~/Views/Certificacion/_FormatoCertificado.cshtml");
