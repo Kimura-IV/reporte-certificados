@@ -1,10 +1,10 @@
 ﻿let estadisticaFilter = {
-    FechaInicio : null,
+    FechaInicio: null,
     FechaFin: null,
-    Plantilla: 0,
-    Firmante: '',
-    Tipo: '',
-    Creador: '',
+    Plantilla: null,
+    Firmante: null,
+    Tipo: null,
+    Creador: null,
     Estado: null
 }
 myChartPlantilla = null
@@ -220,8 +220,8 @@ async function inicializarPantallaEstadisticas() {
     const ejecutarBusquedaEstadistica = debounceEstadistica(function () {
 
         estadisticaFilter = {
-            FechaInicio: $("#fechaInicio").val() ? new Date($("#fechaInicio").val()).toISOString() : null,
-            FechaFin: $("#fechaFin").val() ? new Date($("#fechaFin").val()).toISOString() : null,
+            FechaInicio: $("#fechaInicioEstadistica").val() ? new Date($("#fechaInicioEstadistica").val()).toISOString() : null,
+            FechaFin: $("#fechaFinEstadistica").val() ? new Date($("#fechaFinEstadistica").val()).toISOString() : null,
             Plantilla: parseInt($("#plantillaEstadistica").val()) || 0,
             Firmante: $("#firmanteEstadistica").val() || null,
             Tipo: $("#tipoEstadistica").val() || null,
@@ -237,8 +237,8 @@ async function inicializarPantallaEstadisticas() {
     });
 
     function limpiarFiltrosEstadistica() {
-        $("#fechaInicio").val('');
-        $("#fechaFin").val('');
+        $("#fechaInicioEstadistica").val('');
+        $("#fechaFinEstadistica").val('');
         $("#plantillaEstadistica").val('');
         $("#firmanteEstadistica").val('');
         $("#tipoEstadistica").val('');
@@ -247,8 +247,8 @@ async function inicializarPantallaEstadisticas() {
     }
 
     function iniciarFiltrosEstadistica() {
-        $("#fechaInicio").off('input change').on('input change', ejecutarBusquedaEstadistica);
-        $("#fechaFin").off('input change').on('input change', ejecutarBusquedaEstadistica);
+        $("#fechaInicioEstadistica").off('input change').on('input change', ejecutarBusquedaEstadistica);
+        $("#fechaFinEstadistica").off('input change').on('input change', ejecutarBusquedaEstadistica);
         $("#plantillaEstadistica").off('change').on('change', ejecutarBusquedaEstadistica);
         $("#firmanteEstadistica").off('change').on('change', ejecutarBusquedaEstadistica);
         $("#tipoEstadistica").off('change').on('change', ejecutarBusquedaEstadistica);
@@ -262,6 +262,25 @@ async function inicializarPantallaEstadisticas() {
         });
     }
 
+    $("#plantillaEstadistica").select2({ placeholder: "Seleccione uno o más plantillas" })
+    $("#firmanteEstadistica").select2({ placeholder: "Seleccione uno o más firmantes" })
+    $("#tipoEstadistica").select2({ placeholder: "Seleccione uno o más tipos" })
+    $("#creadorEstadistica").select2({ placeholder: "Seleccione uno o más creadores" })
+    $("#estadoEstadistica").select2({ placeholder: "Seleccione uno o más estados" })
+
+    flatpickr("#fechaInicioEstadistica", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        locale: "es"
+
+    });
+
+    flatpickr("#fechaFinEstadistica", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        locale: "es"
+
+    });
     iniciarFiltrosEstadistica();
 }
 
@@ -270,10 +289,10 @@ function resetObjectEstadistica() {
     objectFilter = {
         FechaInicio: null,
         FechaFin: null,
-        Plantilla: 0,
-        Firmante: '',
-        Tipo: '',
-        Creador: '',
+        Plantilla: null,
+        Firmante: null,
+        Tipo: null,
+        Creador: null,
         Estado: null
     };
 }

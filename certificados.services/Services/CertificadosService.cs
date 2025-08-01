@@ -1,5 +1,6 @@
 ﻿using certificados.dal.DataAccess;
 using certificados.models;
+using certificados.models.Dtos;
 using certificados.models.Entitys;
 using certificados.models.Entitys.dbo;
 using Newtonsoft.Json;
@@ -217,8 +218,11 @@ namespace certificados.services.Services
         {                        
             return Utils.Utils.OkResponse(tcertificadoDA.GetFiltros());
         }
-
-        public ResponseApp GetEstadistica(FiltroEstadistica filtro)
+        public ResponseApp GetReporteCertificado(FiltroReporteDto filtro)
+        {
+            return Utils.Utils.OkResponse(tcertificadoDA.GetReporteCertificado(filtro));
+        }
+        public ResponseApp GetEstadistica(FiltroReporteDto filtro)
         {
             return Utils.Utils.OkResponse(tcertificadoDA.GetEstadistica(filtro));
         }

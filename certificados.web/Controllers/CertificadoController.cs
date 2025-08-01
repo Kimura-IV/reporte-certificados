@@ -1,6 +1,7 @@
 ﻿using certificados.dal.DataAccess;
 using certificados.models;
 using certificados.models.Context;
+using certificados.models.Dtos;
 using certificados.models.Entitys;
 using certificados.models.Entitys.dbo;
 using certificados.services.Services;
@@ -149,29 +150,9 @@ namespace certificados.web.Controllers
         }
 
         [HttpPost("obtener")]
-        public ActionResult<ResponseApp> getCertificates([FromBody] FiltroCertificadoDTO filtro)
-        {
-            var iQueryableCertificado = GenerateIQueryable(filtro);
-            var data = iQueryableCertificado.Select(x => new
-            {
-               
-                
-                    x.Estado,
-                    x.FCreacion,
-                    x.FModificacion,
-                    x.IdCertificado,
-                    x.IdFormato,
-                    x.TformatoCertificado,
-                    x.Tipo,
-                    x.Titulo,
-                    x.UsuarioActualizacion,
-                    x.UsuarioIngreso,
-                    x.TformatoCertificado.NombreFirmanteUno,
-                    x.TformatoCertificado.NombreFirmanteDos,
-                    x.TformatoCertificado.NombreFirmanteTres,
-                    pdfBase64 = Convert.ToBase64String(x.Imagen)               
-            }).ToList();
-            return Ok(Utils.OkResponse(data));
+        public ActionResult<ResponseApp> getCertificates([FromBody] FiltroReporteDto filtro)
+        {            
+          return certificadosService.GetReporteCertificado(filtro);
         }
         [HttpGet("GetFiltrosCertificados")]
         public ActionResult<ResponseApp> GetFiltrosCertificados()
@@ -491,53 +472,9 @@ namespace certificados.web.Controllers
             {
                 document.Add(new Paragraph("\n"));
             }
-        }
-        private IQueryable<Tcertificado> GenerateIQueryable(FiltroCertificadoDTO filtro)
-        {
-            var certificado = context.Tcertificado.AsQueryable();
-            if (filtro == null) return certificado;
-
-
-            var predicate = PredicateBuilder.New<Tcertificado>(true);
-            if (!string.IsNullOrEmpty(filtro.Tipo))
-            {
-                var tipoUpper = filtro.Tipo.ToUpper();
-                predicate = predicate.And(x => !string.IsNullOrEmpty(x.Tipo) && x.Tipo.ToUpper() == tipoUpper);
-            }
-
-            if (filtro.Estado != null)
-            {
-                predicate = predicate.And(x => x.Estado == filtro.Estado);
-            }
-
-            if (filtro.Emision != null)
-            {
-                predicate = predicate.And(x => x.FCreacion >= filtro.Emision.Value.Date && x.FCreacion < filtro.Emision.Value.Date.AddDays(1));
-            }
-
-            if (filtro.Plantilla != 0)
-            {
-                predicate = predicate.And(x => x.IdFormato == filtro.Plantilla);
-            }
-
-            if (!string.IsNullOrEmpty(filtro.Creador))
-            {
-                var creadorUpper = filtro.Creador.ToUpper();
-                predicate = predicate.And(x => !string.IsNullOrEmpty(x.UsuarioIngreso) && x.UsuarioIngreso == creadorUpper);
-            }
-            if (!string.IsNullOrEmpty(filtro.Firmante))
-            {
-                var firmanteUpper = filtro.Firmante.ToUpper();
-                predicate = predicate.And(x =>
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteUno) &&  x.TformatoCertificado.CargoFirmanteUno.ToUpper().Equals(firmanteUpper) ||
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteDos) && x.TformatoCertificado.CargoFirmanteDos.ToUpper().Equals(firmanteUpper) ||
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteTres) && x.TformatoCertificado.CargoFirmanteTres.ToUpper().Equals(firmanteUpper));
-            }
-
-            return certificado.AsExpandable().Where(predicate);
-        }
+        }       
         [HttpPost("Estadistica")]
-        public ResponseApp GetEstadisticas([FromBody] FiltroEstadistica filtro)
+        public ResponseApp GetEstadisticas([FromBody] FiltroReporteDto filtro)
         {
             return certificadosService.GetEstadistica(filtro);
         }

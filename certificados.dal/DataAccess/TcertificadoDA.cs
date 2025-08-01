@@ -1,5 +1,6 @@
 ﻿using certificados.models;
 using certificados.models.Context;
+using certificados.models.Dtos;
 using certificados.models.Entitys;
 using certificados.models.Entitys.auditoria;
 using certificados.models.Entitys.dbo;
@@ -7,6 +8,7 @@ using certificados.models.Helper;
 using certificados.services.Utils;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 namespace certificados.dal.DataAccess
 {
     public class TcertificadoDA(AppDbContext appDbContext)
@@ -252,51 +254,35 @@ namespace certificados.dal.DataAccess
             }
             return filtros;
         }
-        public EstadisticaModel GetEstadistica(FiltroEstadistica filtro)
+        public List<ReporteCertificadoDto> GetReporteCertificado(FiltroReporteDto filtro)
+        {
+            var certificadoIQueryable = context.Tcertificado.AsQueryable();
+            certificadoIQueryable = certificadoIQueryable.AsExpandable().Where(GenerateIQueryableCertificado(filtro));
+            var data = certificadoIQueryable.Select(x => new ReporteCertificadoDto
+            {
+                Estado = x.Estado,
+                FCreacion = x.FCreacion,
+                FModificacion = x.FModificacion,
+                IdCertificado = x.IdCertificado,
+                IdFormato = x.IdFormato,
+                TformatoCertificado = x.TformatoCertificado,
+                Tipo = x.Tipo,
+                Titulo = x.Titulo,
+                UsuarioActualizacion = x.UsuarioActualizacion,
+                UsuarioIngreso = x.UsuarioIngreso,
+                NombreFirmanteUno = x.TformatoCertificado.NombreFirmanteUno,
+                NombreFirmanteDos = x.TformatoCertificado.NombreFirmanteDos,
+                NombreFirmanteTres = x.TformatoCertificado.NombreFirmanteTres,
+                pdfBase64 = Convert.ToBase64String(x.Imagen)
+            }).ToList();
+            return data;
+        }
+        public EstadisticaModel GetEstadistica(FiltroReporteDto filtro)
         {
             EstadisticaModel estadistica = new EstadisticaModel();
             var certificadoIQueryable = context.Tcertificado.AsQueryable();
-            var predicate = PredicateBuilder.New<Tcertificado>(true);
 
-            if (filtro.FechaInicio != null)
-            {
-                predicate = predicate.And(x => x.FCreacion >= filtro.FechaInicio);
-            }
-            if (filtro.FechaFin != null)
-            {
-                predicate = predicate.And(x => x.FCreacion <= filtro.FechaFin);
-            }
-
-            if (!string.IsNullOrEmpty(filtro.Tipo))
-            {
-                var tipoUpper = filtro.Tipo.ToUpper();
-                predicate = predicate.And(x => !string.IsNullOrEmpty(x.Tipo) && x.Tipo.ToUpper() == tipoUpper);
-            }
-
-            if (filtro.Estado != null)
-            {
-                predicate = predicate.And(x => x.Estado == filtro.Estado);
-            }
-
-            if (filtro.Plantilla != 0)
-            {
-                predicate = predicate.And(x => x.IdFormato == filtro.Plantilla);
-            }
-
-            if (!string.IsNullOrEmpty(filtro.Creador))
-            {
-                var creadorUpper = filtro.Creador.ToUpper();
-                predicate = predicate.And(x => !string.IsNullOrEmpty(x.UsuarioIngreso) && x.UsuarioIngreso == creadorUpper);
-            }
-            if (!string.IsNullOrEmpty(filtro.Firmante))
-            {
-                var firmanteUpper = filtro.Firmante.ToUpper();
-                predicate = predicate.And(x =>
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteUno) && x.TformatoCertificado.CargoFirmanteUno.ToUpper().Equals(firmanteUpper) ||
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteDos) && x.TformatoCertificado.CargoFirmanteDos.ToUpper().Equals(firmanteUpper) ||
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteTres) && x.TformatoCertificado.CargoFirmanteTres.ToUpper().Equals(firmanteUpper));
-            }
-            certificadoIQueryable = certificadoIQueryable.AsExpandable().Where(predicate);
+            certificadoIQueryable = certificadoIQueryable.AsExpandable().Where(GenerateIQueryableCertificado(filtro));
 
 
             estadistica.Plantillas = certificadoIQueryable.Include(x => x.TformatoCertificado).GroupBy(x => x.TformatoCertificado.NombrePlantilla).Select(x => new Plantilla
@@ -319,8 +305,8 @@ namespace certificados.dal.DataAccess
             }).ToList();
 
             estadistica.LapsoSemanas = certificadoIQueryable
-             .AsEnumerable() 
-             .GroupBy(x => FirstDayOfWeek(x.FCreacion)) 
+             .AsEnumerable()
+             .GroupBy(x => FirstDayOfWeek(x.FCreacion))
              .Select(g => new LapsoSemana
              {
                  SemanaInicio = g.Key,
@@ -344,6 +330,47 @@ namespace certificados.dal.DataAccess
 
 
             return estadistica;
+        }
+        public ExpressionStarter<Tcertificado> GenerateIQueryableCertificado(FiltroReporteDto filtro)
+        {
+            var predicate = PredicateBuilder.New<Tcertificado>(true);
+
+            if (filtro.FechaInicio != null)
+            {
+                predicate = predicate.And(x => x.FCreacion >= filtro.FechaInicio);
+            }
+            if (filtro.FechaFin != null)
+            {
+                predicate = predicate.And(x => x.FCreacion <= filtro.FechaFin);
+            }
+
+            if (filtro.Tipo != null && filtro.Tipo.Count != 0)
+            {                
+                predicate = predicate.And(x => !string.IsNullOrEmpty(x.Tipo) && filtro.Tipo.Contains(x.Tipo));
+            }
+
+            if (filtro.Estado != null && filtro.Estado.Count != 0)
+            {
+                predicate = predicate.And(x => filtro.Estado.Contains(x.Estado));
+            }
+
+            if (filtro.Plantilla != null && filtro.Plantilla.Count != 0)
+            {
+                predicate = predicate.And(x => filtro.Plantilla.Contains(x.IdFormato));
+            }
+
+            if (filtro.Creador != null && filtro.Creador.Count != 0)
+            {                
+                predicate = predicate.And(x => !string.IsNullOrEmpty(x.UsuarioIngreso) && filtro.Creador.Contains(x.UsuarioIngreso));
+            }
+            if (filtro.Firmante != null && filtro.Firmante.Count != 0)
+            {
+                predicate = predicate.And(x =>
+                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteUno) && filtro.Firmante.Contains(x.TformatoCertificado.CargoFirmanteUno)||
+                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteDos) && filtro.Firmante.Contains(x.TformatoCertificado.CargoFirmanteDos)||
+                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteTres) && filtro.Firmante.Contains(x.TformatoCertificado.CargoFirmanteTres));
+            }
+            return predicate;
         }
         public static DateTime FirstDayOfWeek(DateTime date)
         {

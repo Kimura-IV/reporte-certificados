@@ -14,42 +14,41 @@
         <div class="row">
 
             <div class="col-12 col-md-4 mb-3">
-                <label for="emision" class="form-label">Fecha de Emisión</label>
-                <input type="date" id="emision" class="form-control" />
+                <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
+                <input type="date" id="fechaInicio" class="form-control" placeholder="Seleccione fecha de Inicio"/>
 
             </div>
             <div class="col-12 col-md-4 mb-3">
+                <label for="fechaFin" class="form-label">Fecha de Fin</label>
+                <input type="date" id="fechaFin" class="form-control" placeholder="Seleccione fecha de Fin" />
+            </div>
+            <div class="col-12 col-md-4 mb-3">
                 <label for="plantilla" class="form-label">Plantilla</label>
-                <select id="plantilla" class="form-select">
-                    <option selected disabled value="">Seleccione una plantilla</option>
+                 <select multiple id="plantilla" class="form-select select2">
                 </select>
             </div>
 
             <div class="col-12 col-md-4 mb-3">
                 <label for="firmante" class="form-label">Firmante</label>
-                <select id="firmante" class="form-select">
-                    <option selected disabled value="">Seleccione un firmante</option>
+                 <select multiple id="firmante" class="form-select select2">
                 </select>
             </div>
 
             <div class="col-12 col-md-4 mb-3">
                 <label for="tipo" class="form-label">Tipo Certificado</label>
-                <select id="tipo" class="form-select">
-                    <option selected disabled value="">Seleccione un Tipo Certificado</option>
+                 <select multiple id="tipo" class="form-select select2">
                 </select>
             </div>
 
             <div class="col-12 col-md-4 mb-3">
                 <label for="creador" class="form-label">Usuario Creador</label>
-                <select id="creador" class="form-select">
-                    <option selected disabled value="">Seleccione un creador</option>
+                 <select multiple id="creador" class="form-select select2">
                 </select>
             </div>
 
             <div class="col-12 col-md-4 mb-3">
                 <label for="estado" class="form-label">Estado</label>
-                <select id="estado" class="form-select">
-                    <option selected disabled value="">Seleccione un estado</option>
+                 <select multiple id="estado" class="form-select select2">
                     <option value="true">Activo</option>
                     <option value="false">Inactivo</option>
                 </select>

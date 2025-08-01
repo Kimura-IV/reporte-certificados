@@ -1,10 +1,11 @@
-﻿let objectFilter = {
-    Emision: '',
-    Plantilla: 0,
-    Firmante: '',
-    Tipo: '',
-    Creador: '',
-    Estado: ''
+﻿let objectFilter = {    
+    FechaInicio: null,
+    FechaFin: null,
+    Plantilla: null,
+    Firmante: null,
+    Tipo: null,
+    Creador: null,
+    Estado: null
 };
 let filtroCargado = null;
 let myChart = null;
@@ -609,26 +610,22 @@ async function inicializarPantallaCertificados() {
     }
     
     const ejecutarBusqueda = debounce(function () {
-
+     
         objectFilter = {
-            Emision: $("#emision").val() ? new Date($("#emision").val()).toISOString() : null,
-            Plantilla: parseInt($("#plantilla").val()) || 0,
+            FechaInicio: $("#fechaInicio").val() ? new Date($("#fechaInicio").val()).toISOString() : null,
+            FechaFin: $("#fechaFin").val() ? new Date($("#fechaFin").val()).toISOString() : null,
+            Plantilla: ($("#plantilla").val() || []).map(x => parseInt(x)),
             Firmante: $("#firmante").val() || null,
             Tipo: $("#tipo").val() || null,
             Creador: $("#creador").val() || null,
-            Estado: (() => {
-                const val = $("#estado").val();
-                console.log(val)
-                if (val === "true") return true;
-                if (val === "false") return false;
-                return null;
-            })()
+            Estado: ($("#estado").val() || []).map(x => x === "true") || null
         };
         cargarDatosCertificados()
     });
 
     function limpiarFiltros() {
-        $("#emision").val('');
+        $("#fechaInicio").val('');
+        $("#fechaFin").val('');
         $("#plantilla").val('');
         $("#firmante").val('');
         $("#tipo").val('');
@@ -637,7 +634,8 @@ async function inicializarPantallaCertificados() {
     }
 
     function iniciarFiltros() {
-        $("#emision").off('input change').on('input change', ejecutarBusqueda);
+        $("#fechaInicio").off('input change').on('input change', ejecutarBusqueda);
+        $("#fechaFin").off('input change').on('input change', ejecutarBusqueda);
         $("#plantilla").off('change').on('change', ejecutarBusqueda);
         $("#firmante").off('change').on('change', ejecutarBusqueda);
         $("#tipo").off('change').on('change', ejecutarBusqueda);
@@ -648,17 +646,38 @@ async function inicializarPantallaCertificados() {
             limpiarFiltros();
             ejecutarBusqueda();
         });
+
+        $("#plantilla").select2({ placeholder: "Seleccione uno o más plantillas"})
+        $("#firmante").select2({placeholder: "Seleccione uno o más firmantes"})
+        $("#tipo").select2({placeholder: "Seleccione uno o más tipos"})
+        $("#creador").select2({placeholder: "Seleccione uno o más creadores"})
+        $("#estado").select2({placeholder: "Seleccione uno o más estados"})
+
+        flatpickr("#fechaInicio", {
+            dateFormat: "Y-m-d",
+            allowInput: true,
+            locale: "es"
+
+        });
+
+        flatpickr("#fechaFin", {
+            dateFormat: "Y-m-d",
+            allowInput: true,
+            locale: "es"
+
+        });
     }
 
     iniciarFiltros();
 }
 function resetObject() {
     objectFilter = {
-        Emision: '',
-        Plantilla: 0,
-        Firmante: '',
-        Tipo: '',
-        Creador: '',
-        Estado: ''
+        FechaInicio: null,
+        FechaFin: null,
+        Plantilla: null,
+        Firmante: null,
+        Tipo: null,
+        Creador: null,
+        Estado: null
     };
 }
