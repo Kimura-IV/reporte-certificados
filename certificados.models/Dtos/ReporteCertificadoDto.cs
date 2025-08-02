@@ -14,11 +14,14 @@ namespace certificados.models.Dtos
         public DateTime? FModificacion {get;set;}
         public int IdCertificado {get;set;}
         public int IdFormato {get;set;}
+        public string NombreFormato {get;set; }
         public TformatoCertificado? TformatoCertificado {get;set;}
         public string? Tipo {get;set;}
         public string? Titulo {get;set;}
         public string? UsuarioActualizacion {get;set;}
+        public string? UsuarioActualizacionNombre {get;set; }
         public string? UsuarioIngreso {get;set;}
+        public string? UsuarioIngresoNombre {get;set; }
         public string? NombreFirmanteUno {get;set;}
         public string? NombreFirmanteDos {get;set;}
         public string? NombreFirmanteTres {get;set;}

@@ -32,7 +32,7 @@ namespace certificados.web.Controllers
         private readonly AppDbContext context;
 
         public CertificadoController(CertificadosService certificadosService, EventoService evento, GrupoService grupoService,
-            GrupoPersonaService grupoPersonaService, DocenteService docenteService, FormatoCertificadoService formato, PersonaService personaService, 
+            GrupoPersonaService grupoPersonaService, DocenteService docenteService, FormatoCertificadoService formato, PersonaService personaService,
             DecanatoService decanatoService, AppDbContext context)
         {
             this.certificadosService = certificadosService;
@@ -151,12 +151,12 @@ namespace certificados.web.Controllers
 
         [HttpPost("obtener")]
         public ActionResult<ResponseApp> getCertificates([FromBody] FiltroReporteDto filtro)
-        {            
-          return certificadosService.GetReporteCertificado(filtro);
+        {
+            return certificadosService.GetReporteCertificado(filtro);
         }
         [HttpGet("GetFiltrosCertificados")]
         public ActionResult<ResponseApp> GetFiltrosCertificados()
-        {                
+        {
             return Ok(certificadosService.GetFiltros());
         }
         /*
@@ -209,7 +209,7 @@ namespace certificados.web.Controllers
             }
             return Ok(certificadosService.ElminarCertificado(idCertificado));
         }
-       
+
         [HttpPost("email/notificar")]
         public ActionResult<ResponseApp> enviarMail([FromBody] Dictionary<string, object> request)
         {
@@ -245,7 +245,7 @@ namespace certificados.web.Controllers
         {
             if (dto == null)
                 return BadRequest(Utils.BadResponse(CONSTANTES.MESSAGE_DATA_ERRORS));
-            
+
             var certificadoRq = certificadosService.CertificadosById(dto.idCertificado);
             if (!certificadoRq.Cod.Equals(CONSTANTES.COD_OK))
             {
@@ -254,13 +254,14 @@ namespace certificados.web.Controllers
             Tcertificado certificado = CertificadoMapper.toEntity(certificadoRq.Data);
 
             List<Tdocente> Listadocente = new List<Tdocente>();
-            foreach (var docent in dto.docentes) {
+            foreach (var docent in dto.docentes)
+            {
                 var requestDocente = docenteService.ObtenerDocentesByCedula(docent);
                 if (!requestDocente.Cod.Equals(CONSTANTES.COD_OK))
                     continue;
                 Tdocente docente = DocenteMapper.toEntity(requestDocente.Data);
                 Listadocente.Add(docente);
-                
+
             }
 
             return new ResponseApp();
@@ -331,7 +332,7 @@ namespace certificados.web.Controllers
                         logoImage.Alignment = iTextSharp.text.Image.ALIGN_CENTER;
                         //logoImage.ScaleAbsolute(250f, 60f);
                         document.Add(logoImage);
-                        agregarSaltodeLinea(document,1);
+                        agregarSaltodeLinea(document, 1);
                     }
 
                     // Agregar nombre del decanato
@@ -454,7 +455,7 @@ namespace certificados.web.Controllers
                         certificadosService.EnviarCertificadoIndividual(cedula, pdfBytes);
                         return Ok(new ResponseApp { Cod = "OK", Message = "CERTIFICADO ENVIADO AL CORREO ELECTRÓNICO CON ÉXITO", Data = "" });
                     }
-                    else 
+                    else
                     {
                         return Ok(new ResponseApp { Cod = "OK", Message = "CERTIFICADO GENERADO CON ÉXITO", Data = base64String });
                     }
@@ -472,11 +473,27 @@ namespace certificados.web.Controllers
             {
                 document.Add(new Paragraph("\n"));
             }
-        }       
+        }
         [HttpPost("Estadistica")]
         public ResponseApp GetEstadisticas([FromBody] FiltroReporteDto filtro)
         {
             return certificadosService.GetEstadistica(filtro);
+        }
+        [HttpPost("DescargarExcelReporte")]
+        public IActionResult GenerarExcelReporte([FromBody] FiltroReporteDto filtro)
+        {
+            var excelBytes = certificadosService.GenerarExcelReporte(filtro);
+            return File(excelBytes,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "reporte.xlsx");
+        }
+        [HttpPost("DescargarExcelReporteEstadistica")]
+        public IActionResult GenerarExcelEstadisitca([FromBody] EstadisticaReporteExcel estadisticaReporteExcel)
+        {
+            var excelBytes = certificadosService.GenerarCertificadoEstadistica(estadisticaReporteExcel);
+            return File(excelBytes,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "reporte.xlsx");
         }
     }
 }

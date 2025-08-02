@@ -273,6 +273,7 @@ namespace certificados.dal.DataAccess
                 NombreFirmanteUno = x.TformatoCertificado.NombreFirmanteUno,
                 NombreFirmanteDos = x.TformatoCertificado.NombreFirmanteDos,
                 NombreFirmanteTres = x.TformatoCertificado.NombreFirmanteTres,
+                NombreFormato = x.TformatoCertificado.NombrePlantilla,
                 pdfBase64 = Convert.ToBase64String(x.Imagen)
             }).ToList();
             return data;

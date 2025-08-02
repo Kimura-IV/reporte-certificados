@@ -54,8 +54,11 @@
                 </select>
             </div>
         </div>        
-        <div class="d-flex  justify-content-end align-items-center">
-            
+        <div class="d-flex  justify-content-end align-items-center gap-2">
+            <button class="btn btn-success" id="btnDescargarExcelEstadistica"
+                    data-bs-toggle="modal" data-bs-target="#modalConfirmacionDescarga">
+                <i class="bi bi-file-earmark-spreadsheet-fill"></i> Descargar Excel
+            </button>
             <button class="btn btn-primary" id="btnLimpiarEstadistica">
                 <i class="bi bi-trash">Limpiar Filtros</i>
             </button>
@@ -87,4 +90,28 @@
         </div>
 
     </div> 
+</div>
+<div class="modal fade" id="modalConfirmacionDescarga" tabindex="-1" aria-labelledby="modalLabelDescarga" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabelDescarga">Confirmar descarga</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body d-flex flex-column ">
+                <label for="tiposExcelsEstaditica" class="form-label">Seleccione los gráficos </label>
+                <select multiple id="tiposExcelsEstaditica" class="form-select select2">
+                    <option value="plantilla">Gráfica Plantillas</option>
+                    <option value="firmante">Gráfica Firmantes</option>
+                    <option value="dia">Gráfica Dias</option>
+                    <option value="semana">Gráfica Semanas</option>
+                    <option value="anio">Gráfica Años</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="confirmarDescargaExcelEstaditica">Descargar</button>
+            </div>
+        </div>
+    </div>
 </div>

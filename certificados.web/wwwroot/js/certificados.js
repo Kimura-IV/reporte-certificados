@@ -634,6 +634,7 @@ async function inicializarPantallaCertificados() {
     }
 
     function iniciarFiltros() {
+        
         $("#fechaInicio").off('input change').on('input change', ejecutarBusqueda);
         $("#fechaFin").off('input change').on('input change', ejecutarBusqueda);
         $("#plantilla").off('change').on('change', ejecutarBusqueda);
@@ -641,7 +642,7 @@ async function inicializarPantallaCertificados() {
         $("#tipo").off('change').on('change', ejecutarBusqueda);
         $("#creador").off('change').on('change', ejecutarBusqueda);
         $("#estado").off('change').on('change', ejecutarBusqueda);
-
+        $("#btnDescargarExcel").off('click').on('click', DescargarExcelReporte);
         $("#btnLimpiar").off('click').on('click', function () {
             limpiarFiltros();
             ejecutarBusqueda();
@@ -680,4 +681,34 @@ function resetObject() {
         Creador: null,
         Estado: null
     };
+}
+async function DescargarExcelReporte() {
+    try {
+        const fileHandle = await window.showSaveFilePicker({
+            suggestedName: 'reporte.xlsx',
+            types: [{
+                description: 'Excel Files',
+                accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] }
+            }]
+        });
+
+        const response = await fetch(`${Utils.path}/certificado/DescargarExcelReporte`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(objectFilter)
+        });
+
+        if (!response.ok) throw new Error("Error al generar el Excel.");
+
+        const blob = await response.blob();
+
+        const writable = await fileHandle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+
+    } catch (error) {
+        console.error("Error:", error);
+    }
 }

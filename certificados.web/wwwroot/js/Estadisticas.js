@@ -14,7 +14,7 @@ let filtroCargadoEstadistica = null;
 responseGraficas = null
 async function CargarEstadistica() {
     if (filtroCargado == null) {
-        resetObject()
+        resetObjectEstadistica()
     }
     await inicializarPantallaEstadisticas()
         await CargarEstadisticas();
@@ -39,7 +39,7 @@ async function CargarEstadisticas() {
     if (myChartPlantilla) {
         myChartPlantilla.destroy();
     }
-    console.log(data)
+    console.log(response)
     
     const ctxPlantilla = document.getElementById('plantillaEstadisticas');
 
@@ -159,7 +159,12 @@ async function CargarEstadisticas() {
 
 
     GenerateGraficoTiempo()
+    if (response.cod === Utils.COD_OK && response.data.firmantes.length > 0) {
+        Utils.showToast('DATOS CARGADOS EXITOSAMENTE', 'success');
 
+    } else {
+        Utils.showToast('NO EXISTEN CERTIFICADOS REGISTRADOS', 'info');
+    }
   
 }
 
@@ -222,16 +227,11 @@ async function inicializarPantallaEstadisticas() {
         estadisticaFilter = {
             FechaInicio: $("#fechaInicioEstadistica").val() ? new Date($("#fechaInicioEstadistica").val()).toISOString() : null,
             FechaFin: $("#fechaFinEstadistica").val() ? new Date($("#fechaFinEstadistica").val()).toISOString() : null,
-            Plantilla: parseInt($("#plantillaEstadistica").val()) || 0,
+            Plantilla: ($("#plantillaEstadistica").val() || []).map(x => parseInt(x)),
             Firmante: $("#firmanteEstadistica").val() || null,
             Tipo: $("#tipoEstadistica").val() || null,
             Creador: $("#creadorEstadistica").val() || null,
-            Estado: (() => {
-                const val = $("#estadoEstadistica").val();
-                if (val === "true") return true;
-                if (val === "false") return false;
-                return null;
-            })()
+            Estado: ($("#estadoEstadistica").val() || []).map(x => x === "true") || null
         };
         CargarEstadisticas()
     });
@@ -258,35 +258,43 @@ async function inicializarPantallaEstadisticas() {
 
         $("#btnLimpiarEstadistica").off('click').on('click', function () {
             limpiarFiltrosEstadistica();
-            ejecutarBusquedaEstadistica();
+        });
+        $("#confirmarDescargaExcelEstaditica").off('click').on('click', DescargarExcelEstadisitca);
+
+        $("#plantillaEstadistica").select2({ placeholder: "Seleccione uno o más plantillas" })
+        $("#firmanteEstadistica").select2({ placeholder: "Seleccione uno o más firmantes" })
+        $("#tipoEstadistica").select2({ placeholder: "Seleccione uno o más tipos" })
+        $("#creadorEstadistica").select2({ placeholder: "Seleccione uno o más creadores" })
+        $("#estadoEstadistica").select2({ placeholder: "Seleccione uno o más estados" })
+        $("#tiposExcelsEstaditica").select2({
+            dropdownParent: $('#modalConfirmacionDescarga'),
+
+
+            placeholder: "Seleccione uno o más gráficos"
+        })
+
+        flatpickr("#fechaInicioEstadistica", {
+            dateFormat: "Y-m-d",
+            allowInput: true,
+            locale: "es"
+
+        });
+
+        flatpickr("#fechaFinEstadistica", {
+            dateFormat: "Y-m-d",
+            allowInput: true,
+            locale: "es"
+
         });
     }
 
-    $("#plantillaEstadistica").select2({ placeholder: "Seleccione uno o más plantillas" })
-    $("#firmanteEstadistica").select2({ placeholder: "Seleccione uno o más firmantes" })
-    $("#tipoEstadistica").select2({ placeholder: "Seleccione uno o más tipos" })
-    $("#creadorEstadistica").select2({ placeholder: "Seleccione uno o más creadores" })
-    $("#estadoEstadistica").select2({ placeholder: "Seleccione uno o más estados" })
-
-    flatpickr("#fechaInicioEstadistica", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        locale: "es"
-
-    });
-
-    flatpickr("#fechaFinEstadistica", {
-        dateFormat: "Y-m-d",
-        allowInput: true,
-        locale: "es"
-
-    });
+   
     iniciarFiltrosEstadistica();
 }
 
 
 function resetObjectEstadistica() {
-    objectFilter = {
+    estadisticaFilter = {
         FechaInicio: null,
         FechaFin: null,
         Plantilla: null,
@@ -295,8 +303,43 @@ function resetObjectEstadistica() {
         Creador: null,
         Estado: null
     };
-}
+} 
+async function DescargarExcelEstadisitca() {
+    const selectTiposExcel = $('#tiposExcelsEstaditica').val() || [];
+    const excelEstadisitca = {
+        Graficos: selectTiposExcel,
+        Filtro: estadisticaFilter
+    };
 
+    try {
+        const fileHandle = await window.showSaveFilePicker({
+            suggestedName: 'reporte.xlsx',
+            types: [{
+                description: 'Excel Files',
+                accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] }
+            }]
+        });
+
+        const response = await fetch(`${Utils.path}/certificado/DescargarExcelReporteEstadistica`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(excelEstadisitca)
+        });
+
+        if (!response.ok) throw new Error("Error al generar el Excel.");
+
+        const blob = await response.blob();
+
+        const writable = await fileHandle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
 function GenerateGraficoTiempo() {
     const value = document.getElementById("tipoTiempoEstadistica").value;
     const ctxLinea = document.getElementById('lineaTiempoEstadisticas');
