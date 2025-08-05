@@ -65,11 +65,23 @@
         </div>
         <div class="tab-pane fade show active m-1" id="tablaEstadistica" role="tabpanel" aria-labelledby="tabla-tab">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
                     <canvas id="plantillaEstadisticas"></canvas>
+                    <div class="col-12 col-md-4 mt-3">
+                        <select id="tipoPlantillaEstadistica" class="form-select select2">
+                            <option selected value="pie">Gráfico Pie</option>
+                            <option  value="bar">Gráfico Barras</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
                     <canvas id="firmanteEstadisticas"></canvas>
+                    <div class="col-12 col-md-4 mt-3">
+                        <select id="tipoFirmanteEstadistica" class="form-select select2">
+                            <option selected value="bar">Gráfico Barras</option>
+                            <option value="pie">Gráfico Pie</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-md-3">
 
@@ -101,8 +113,10 @@
             <div class="modal-body d-flex flex-column ">
                 <label for="tiposExcelsEstaditica" class="form-label">Seleccione los gráficos </label>
                 <select multiple id="tiposExcelsEstaditica" class="form-select select2">
-                    <option value="plantilla">Gráfica Plantillas</option>
-                    <option value="firmante">Gráfica Firmantes</option>
+                    <option value="plantillaPie">Gráfica Plantillas Pie</option>
+                    <option value="plantillaBarra">Gráfica Plantillas Barra</option>
+                    <option value="firmanteBarra">Gráfica Firmantes Barra</option>
+                    <option value="firmantePie">Gráfica Firmantes Pie</option>
                     <option value="dia">Gráfica Dias</option>
                     <option value="semana">Gráfica Semanas</option>
                     <option value="anio">Gráfica Años</option>

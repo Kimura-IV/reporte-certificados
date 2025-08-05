@@ -281,8 +281,9 @@ namespace certificados.services.Services
             int row = 1;
            foreach (var grafico in estadisticaReporteExcel.Graficos)
             {
-                if (grafico.Equals("plantilla")){
-                    var ws = package.Workbook.Worksheets.Add("Plantillas");
+                if (grafico.Equals("plantillaPie"))
+                {
+                    var ws = package.Workbook.Worksheets.Add("Plantillas Pie");
 
                     // === Pie Chart - Plantillas ===
                     ws.Cells[row, 1].Value = "Plantilla";
@@ -302,6 +303,30 @@ namespace certificados.services.Services
                     ws.Cells[ws.Dimension.Address].AutoFitColumns();
 
                 }
+
+                if (grafico.Equals("plantillaBarra"))
+                {
+                    var ws = package.Workbook.Worksheets.Add("Plantillas Barra");
+
+                    // === Bar Chart - Firmantes ===
+                    ws.Cells[row, 1].Value = "Plantilla";
+                    ws.Cells[row, 2].Value = "Cantidad";
+                    for (int i = 0; i < estadisticas.Plantillas.Count; i++)
+                    {
+                        ws.Cells[row + i + 1, 1].Value = estadisticas.Plantillas[i].NombrePlantilla;
+                        ws.Cells[row + i + 1, 2].Value = estadisticas.Plantillas[i].Count;
+                    }
+
+                    var barChart = ws.Drawings.AddChart("chart_bar", eChartType.ColumnClustered) as ExcelBarChart;
+                    barChart.Title.Text = "Distribución por Plantilla";
+                    barChart.SetPosition(0, 0, 3, 0);
+                    barChart.SetSize(600, 400);
+                    barChart.Series.Add(ws.Cells[row + 1, 2, row + estadisticas.Plantillas.Count, 2],
+                                        ws.Cells[row + 1, 1, row + estadisticas.Plantillas.Count, 1]);
+                    ws.Cells[ws.Dimension.Address].AutoFitColumns();
+
+                }
+
                 if (grafico.Equals("dia"))
                 {
                     var ws = package.Workbook.Worksheets.Add("Dias");
@@ -374,9 +399,9 @@ namespace certificados.services.Services
                     ws.Cells[ws.Dimension.Address].AutoFitColumns();
 
                 }
-                if (grafico.Equals("firmante"))
+                if (grafico.Equals("firmanteBarra"))
                 {
-                    var ws = package.Workbook.Worksheets.Add("Firmantes");
+                    var ws = package.Workbook.Worksheets.Add("Firmantes Barra");
 
                     // === Bar Chart - Firmantes ===
                     ws.Cells[row, 1].Value = "Firmante";
@@ -392,6 +417,28 @@ namespace certificados.services.Services
                     barChart.SetPosition(0, 0, 3, 0);
                     barChart.SetSize(600, 400);
                     barChart.Series.Add(ws.Cells[row + 1, 2, row + estadisticas.Firmantes.Count, 2],
+                                        ws.Cells[row + 1, 1, row + estadisticas.Firmantes.Count, 1]);
+                    ws.Cells[ws.Dimension.Address].AutoFitColumns();
+
+                }
+                if (grafico.Equals("firmantePie"))
+                {
+                    var ws = package.Workbook.Worksheets.Add("Firmantes Pie");
+
+                    // === Pie Chart - Plantillas ===
+                    ws.Cells[row, 1].Value = "Firmante";
+                    ws.Cells[row, 2].Value = "Cantidad";
+                    for (int i = 0; i < estadisticas.Plantillas.Count; i++)
+                    {
+                        ws.Cells[row + i + 1, 1].Value = estadisticas.Firmantes[i].NombreFirmante;
+                        ws.Cells[row + i + 1, 2].Value = estadisticas.Firmantes[i].Count;
+                    }
+
+                    var pieChart = ws.Drawings.AddChart("chart_pie", eChartType.PieExploded3D) as ExcelPieChart;
+                    pieChart.Title.Text = "Firmantes";
+                    pieChart.SetPosition(0, 0, 3, 0);
+                    pieChart.SetSize(500, 400);
+                    pieChart.Series.Add(ws.Cells[row + 1, 2, row + estadisticas.Firmantes.Count, 2],
                                         ws.Cells[row + 1, 1, row + estadisticas.Firmantes.Count, 1]);
                     ws.Cells[ws.Dimension.Address].AutoFitColumns();
 

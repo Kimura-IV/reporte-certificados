@@ -36,128 +36,9 @@ async function CargarEstadisticas() {
     const data = response.data;
     const dataPlantilla = data.plantillas;
 
-    if (myChartPlantilla) {
-        myChartPlantilla.destroy();
-    }
-    console.log(response)
-    
-    const ctxPlantilla = document.getElementById('plantillaEstadisticas');
 
-    myChartPlantilla = new Chart(ctxPlantilla, {
-        type: 'pie',
-        data: {
-            labels: dataPlantilla.map(x => x.nombrePlantilla),
-            datasets: [{
-                label: 'Certificados por Plantilla',
-                data: dataPlantilla.map(x => x.count),
-                backgroundColor: dataPlantilla.map((_, i) => {
-                    const colors = [
-                        '#FF6384', '#36A2EB', '#FFCE56',
-                        '#4BC0C0', '#9966FF', '#FF9F40',
-                        '#B8E986', '#D72638', '#3F88C5'
-                    ];
-                    return colors[i % colors.length];
-                }),
-                borderColor: 'white',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                },
-                datalabels: {
-                    color: 'white',
-                    font: {
-                        weight: 'bold',
-                        size: 14
-                    },
-                    formatter: (value, context) => {
-                        const data = context.chart.data.datasets[0].data;
-                        const total = data.reduce((a, b) => a + b, 0);
-                        const percentage = (value / total * 100).toFixed(1);
-                        return `${percentage}%`;
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                            const value = context.parsed;
-                            const percentage = ((value / total) * 100).toFixed(2);
-                            return `${context.label}: ${value} (${percentage}%)`;
-                        }
-                    }
-                }
-            }
-        },
-        plugins: [ChartDataLabels]
-    });
-
-    const dataFirmates = data.firmantes;
-    if (myChartFirmante) {
-        myChartFirmante.destroy();
-    }
-    const ctxFirmante = document.getElementById('firmanteEstadisticas');
-
-    myChartFirmante = new Chart(ctxFirmante, {
-        type: 'bar',
-        data: {
-            labels: dataFirmates.map(x => x.nombreFirmante),
-            datasets: [{
-                label: 'Firmantes',
-                data: dataFirmates.map(x => x.count),
-                backgroundColor: dataPlantilla.map((_, i) => {
-                    const colors = [
-                        '#FF6384', '#36A2EB', '#FFCE56',
-                        '#4BC0C0', '#9966FF', '#FF9F40',
-                        '#B8E986', '#D72638', '#3F88C5'
-                    ];
-                    return colors[i % colors.length];
-                }),
-                borderColor: 'white',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                },
-                datalabels: {
-                    color: 'white',
-                    font: {
-                        weight: 'bold',
-                        size: 14
-                    },
-                    formatter: (value, context) => {
-                        const data = context.chart.data.datasets[0].data;
-                        const total = data.reduce((a, b) => a + b, 0);
-                        const percentage = (value / total * 100).toFixed(1);
-                        return `${percentage}%`;
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            const label = context.dataset.label || ''; 
-                            const value = context.raw; 
-                            const data = context.chart.data.datasets[0].data;
-                            const total = data.reduce((a, b) => a + b, 0);
-                            const percentage = total ? ((value / total) * 100).toFixed(2) : '0.00';
-                            return `${label}: ${value} (${percentage}%)`;
-                        }
-                    }
-                }
-            }
-        },
-        plugins: [ChartDataLabels]
-    });
-
-
+    GenerateGraficoPlantilla() 
+    GenerateGraficoFirmante();
     GenerateGraficoTiempo()
     if (response.cod === Utils.COD_OK && response.data.firmantes.length > 0) {
         Utils.showToast('DATOS CARGADOS EXITOSAMENTE', 'success');
@@ -255,6 +136,8 @@ async function inicializarPantallaEstadisticas() {
         $("#creadorEstadistica").off('change').on('change', ejecutarBusquedaEstadistica);
         $("#estadoEstadistica").off('change').on('change', ejecutarBusquedaEstadistica);
         $("#tipoTiempoEstadistica").off('change').on('change', GenerateGraficoTiempo);
+        $("#tipoPlantillaEstadistica").off('change').on('change', GenerateGraficoPlantilla);
+        $("#tipoFirmanteEstadistica").off('change').on('change', GenerateGraficoFirmante);
 
         $("#btnLimpiarEstadistica").off('click').on('click', function () {
             limpiarFiltrosEstadistica();
@@ -340,6 +223,16 @@ async function DescargarExcelEstadisitca() {
         console.error("Error:", error);
     }
 }
+
+
+function GenerateGraficoPlantilla() {
+    
+    const value = document.getElementById("tipoPlantillaEstadistica").value;
+    if (myChartPlantilla) {
+        myChartPlantilla.destroy();
+    }
+    GenerarGraficoPlantilla(value);
+}
 function GenerateGraficoTiempo() {
     const value = document.getElementById("tipoTiempoEstadistica").value;
     const ctxLinea = document.getElementById('lineaTiempoEstadisticas');
@@ -363,8 +256,132 @@ function GenerateGraficoTiempo() {
             break;
     }   
 }
+function GenerateGraficoFirmante() {
+    const value = document.getElementById("tipoFirmanteEstadistica").value;
+
+    if (myChartFirmante) {
+        myChartFirmante.destroy();
+    }
+    GenerarGraficoFirmante(value);
+}
+function GenerarGraficoFirmante(tipo) {
+    const ctxFirmante = document.getElementById('firmanteEstadisticas');
+    const dataFirmates = responseGraficas.data.firmantes;
+    myChartFirmante = new Chart(ctxFirmante, {
+        type: tipo,
+        data: {
+            labels: dataFirmates.map(x => x.nombreFirmante),
+            datasets: [{
+                label: 'Firmantes',
+                data: dataFirmates.map(x => x.count),
+                backgroundColor: dataFirmates.map((_, i) => {
+                    const colors = [
+                        '#FF6384', '#36A2EB', '#FFCE56',
+                        '#4BC0C0', '#9966FF', '#FF9F40',
+                        '#B8E986', '#D72638', '#3F88C5'
+                    ];
+                    return colors[i % colors.length];
+                }),
+                borderColor: 'white',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                datalabels: {
+                    color: 'white',
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    formatter: (value, context) => {
+                        const data = context.chart.data.datasets[0].data;
+                        const total = data.reduce((a, b) => a + b, 0);
+                        const percentage = (value / total * 100).toFixed(1);
+                        return `${percentage}%`;
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const label = context.dataset.label || '';
+                            const value = context.raw;
+                            const data = context.chart.data.datasets[0].data;
+                            const total = data.reduce((a, b) => a + b, 0);
+                            const percentage = total ? ((value / total) * 100).toFixed(2) : '0.00';
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+}
+function GenerarGraficoPlantilla(tipo) {
+    const dataResponse = responseGraficas.data.plantillas;
+    const ctxPlantilla = document.getElementById('plantillaEstadisticas');
 
 
+    myChartPlantilla = new Chart(ctxPlantilla, {
+        type: tipo,
+        data: {
+            labels: dataResponse.map(x => x.nombrePlantilla),
+            datasets: [{
+                label: 'Certificados por Plantilla',
+                data: dataResponse.map(x => x.count),
+                backgroundColor: dataResponse.map((_, i) => {
+                    const colors = [
+                        '#FF6384', '#36A2EB', '#FFCE56',
+                        '#4BC0C0', '#9966FF', '#FF9F40',
+                        '#B8E986', '#D72638', '#3F88C5'
+                    ];
+                    return colors[i % colors.length];
+                }),
+                borderColor: 'white',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                datalabels: {
+                    color: 'white',
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    formatter: (value, context) => {
+                        const data = context.chart.data.datasets[0].data;
+                        const total = data.reduce((a, b) => a + b, 0);
+                        const percentage = (value / total * 100).toFixed(1);
+                        return `${percentage}%`;
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                            const value = context.parsed;
+                            const percentage = ((value / total) * 100).toFixed(2);
+                            return `${context.label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+}
 function GenerarGraficaAnio(contextEstadistica, dataEstadisitca) {
     myChartLineaTiempo = new Chart(contextEstadistica, {
         type: 'line',
@@ -422,6 +439,7 @@ function GenerarGraficaAnio(contextEstadistica, dataEstadisitca) {
         }
     });
 }
+
 function GenerarGraficaSemana(contextEstadistica, dataEstadisitca) {
     myChartLineaTiempo = new Chart(contextEstadistica, {
         type: 'line',
