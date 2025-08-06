@@ -152,7 +152,7 @@ async function handleAgregarFormato(event) {
 
     try {
 
-        const errorPlantilla = await validSizeImages("linea-grafica", plantillaWidth, plantillaHeight, "linea grafica");
+        const errorPlantilla = await validSizePlantilla();
         if (errorPlantilla) {
             Utils.showToast(errorPlantilla, 'danger');
             return;
@@ -442,6 +442,32 @@ async function cargarDecanatos() {
     }
 }
 
+function validSizePlantilla() {
+    return new Promise((resolve) => {
+        const filePlantilla = $("#linea-grafica")[0].files[0];
+        if (!filePlantilla) {
+            resolve(null);
+            return;
+        }
+
+        const img = new Image();
+        img.src = URL.createObjectURL(filePlantilla);
+
+        img.onload = function () {
+            URL.revokeObjectURL(img.src);
+            if (img.width <= img.height ) {
+                resolve(`La Linea gráfica debe tener un ancho de mayor al alto.`);
+            } else {
+                resolve(null);
+            }
+        };
+
+        img.onerror = function () {
+            URL.revokeObjectURL(img.src);
+            resolve('No se pudo cargar la imagen para validar tamaño.');
+        };
+    });
+}
 function validSizeImages(inputSelector, requiredWidth, requiredHeight, modelo) {
     return new Promise((resolve) => {
         const filePlantilla = $(`#${inputSelector}`)[0].files[0];
@@ -455,8 +481,8 @@ function validSizeImages(inputSelector, requiredWidth, requiredHeight, modelo) {
 
         img.onload = function () {
             URL.revokeObjectURL(img.src);
-            if (img.width !== requiredWidth || img.height !== requiredHeight) {
-                resolve(`La ${modelo} debe tener un ancho de ${requiredWidth}px y un alto de ${requiredHeight}px.`);
+            if (img.width != img.height) {
+                resolve(`La ${modelo} debe tener un ancho igual al alto`);
             } else {
                 resolve(null);
             }

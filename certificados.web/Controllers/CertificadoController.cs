@@ -312,7 +312,7 @@ namespace certificados.web.Controllers
 
                 using (var memoryStream = new MemoryStream())
                 {
-                    var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate());
+                    var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate(), 100f, 100f, 60f, 80f);
                     var writer = iTextSharp.text.pdf.PdfWriter.GetInstance(document, memoryStream);
                     document.Open();
 
@@ -330,6 +330,8 @@ namespace certificados.web.Controllers
                     {
                         var logoImage = iTextSharp.text.Image.GetInstance((byte[])dataFormato.LogoUG);
                         logoImage.Alignment = iTextSharp.text.Image.ALIGN_CENTER;
+                        logoImage.ScaleAbsolute(120, 120);
+             
                         //logoImage.ScaleAbsolute(250f, 60f);
                         document.Add(logoImage);
                         agregarSaltodeLinea(document, 1);
@@ -382,13 +384,13 @@ namespace certificados.web.Controllers
                     {
                         var qrImage = iTextSharp.text.Image.GetInstance((byte[])dataFormato.Qr);
                         qrImage.ScaleAbsolute(80, 80);
-                        qrImage.SetAbsolutePosition(50, 80); // Posición X, Y para el QR
+                        qrImage.SetAbsolutePosition(120f, 150); // Posición X, Y para el QR
                         document.Add(qrImage);
                     }
 
                     // Posiciones iniciales para los firmantes
-                    float startX = 300; // Posición X inicial para el primer firmante
-                    float startY = 100; // Posición Y común para todos los firmantes
+                    float startX = 250; // Posición X inicial para el primer firmante
+                    float startY = 120; // Posición Y común para todos los firmantes
                     float lineHeight = 20;
                     float spacing = 180; // Espacio horizontal entre firmantes
 
