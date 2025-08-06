@@ -229,11 +229,11 @@ namespace certificados.dal.DataAccess
                     idFormato = x.idFormato,
                     NombrePlantilla = x.NombrePlantilla
                 }).ToList();
-                filtros.Tipos = context.Tcertificado.Where(x => !string.IsNullOrEmpty(x.Tipo)).Select(x => x.Tipo!).Distinct().ToList();
+                filtros.Tipos = context.Tcertificado.Where(x => !string.IsNullOrEmpty(x.TformatoCertificado.Tipo)).Select(x => x.TformatoCertificado.Tipo!).Distinct().ToList();
                 filtros.Firmantes = context.TformatoCertificado
-                    .Select(x => new { x.CargoFirmanteDos, x.CargoFirmanteTres, x.CargoFirmanteUno })
+                    .Select(x => new { x.NombreFirmanteUno, x.NombreFirmanteDos, x.NombreFirmanteTres })
                     .AsEnumerable()
-                    .SelectMany(x => new[] { x.CargoFirmanteDos, x.CargoFirmanteTres, x.CargoFirmanteUno })
+                    .SelectMany(x => new[] { x.NombreFirmanteUno, x.NombreFirmanteDos, x.NombreFirmanteTres })
                     .Where(nombre => !string.IsNullOrEmpty(nombre))
                     .Select(nombre => nombre!).Distinct()
                     .ToList();
@@ -347,7 +347,7 @@ namespace certificados.dal.DataAccess
 
             if (filtro.Tipo != null && filtro.Tipo.Count != 0)
             {                
-                predicate = predicate.And(x => !string.IsNullOrEmpty(x.Tipo) && filtro.Tipo.Contains(x.Tipo));
+                predicate = predicate.And(x => !string.IsNullOrEmpty(x.TformatoCertificado.Tipo) && filtro.Tipo.Contains(x.TformatoCertificado.Tipo));
             }
 
             if (filtro.Estado != null && filtro.Estado.Count != 0)
@@ -367,9 +367,9 @@ namespace certificados.dal.DataAccess
             if (filtro.Firmante != null && filtro.Firmante.Count != 0)
             {
                 predicate = predicate.And(x =>
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteUno) && filtro.Firmante.Contains(x.TformatoCertificado.CargoFirmanteUno)||
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteDos) && filtro.Firmante.Contains(x.TformatoCertificado.CargoFirmanteDos)||
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteTres) && filtro.Firmante.Contains(x.TformatoCertificado.CargoFirmanteTres));
+                !string.IsNullOrEmpty(x.TformatoCertificado.NombreFirmanteUno) && filtro.Firmante.Contains(x.TformatoCertificado.NombreFirmanteUno) ||
+                !string.IsNullOrEmpty(x.TformatoCertificado.NombreFirmanteDos) && filtro.Firmante.Contains(x.TformatoCertificado.NombreFirmanteDos)||
+                !string.IsNullOrEmpty(x.TformatoCertificado.NombreFirmanteTres) && filtro.Firmante.Contains(x.TformatoCertificado.NombreFirmanteTres));
             }
             return predicate;
         }
