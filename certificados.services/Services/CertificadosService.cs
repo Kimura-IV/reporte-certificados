@@ -259,7 +259,10 @@ namespace certificados.services.Services
                     worksheet.Cells[i+2, 7].Value = result[i].NombreFirmanteUno;
                     worksheet.Cells[i+2, 8].Value = result[i].NombreFirmanteDos;
                     worksheet.Cells[i+2, 9].Value = result[i].NombreFirmanteTres;
-                }                        
+                }
+
+                worksheet.Cells[1, 2, worksheet.Dimension.End.Row, 3].Style.Numberformat.Format = "yyyy-mm-dd";
+
                 worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
                 var headerRange = worksheet.Cells[1, 1, 1, 11];
                 headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
