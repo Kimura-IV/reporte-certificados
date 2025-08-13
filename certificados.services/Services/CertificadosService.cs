@@ -241,24 +241,22 @@ namespace certificados.services.Services
                 var worksheet = package.Workbook.Worksheets.Add($"Reporte-Certificado");
                 worksheet.Cells[1,1].Value = "Estado";
                 worksheet.Cells[1,2].Value = "FCreacion";
-                worksheet.Cells[1,3].Value = "FModificacion";
-                worksheet.Cells[1,4].Value = "Formato";         
-                worksheet.Cells[1,5].Value = "Tipo";
-                worksheet.Cells[1,6].Value = "Titulo";
-                worksheet.Cells[1,7].Value = "NombreFirmanteUno";
-                worksheet.Cells[1,8].Value = "NombreFirmanteDos";
-                worksheet.Cells[1,9].Value = "NombreFirmanteTres";
+                worksheet.Cells[1,3].Value = "Formato";         
+                worksheet.Cells[1,4].Value = "Tipo";
+                worksheet.Cells[1,5].Value = "Titulo";
+                worksheet.Cells[1,6].Value = "NombreFirmanteUno";
+                worksheet.Cells[1,7].Value = "NombreFirmanteDos";
+                worksheet.Cells[1,8].Value = "NombreFirmanteTres";
                 for(int i = 0; i <result.Count; i++)
                 {
                     worksheet.Cells[i+2, 1].Value = result[i].Estado;
                     worksheet.Cells[i+2, 2].Value = result[i].FCreacion;
-                    worksheet.Cells[i+2, 3].Value = result[i].FModificacion;
-                    worksheet.Cells[i+2, 4].Value = result[i].NombreFormato;
-                    worksheet.Cells[i+2, 5].Value = result[i].Tipo;
-                    worksheet.Cells[i+2, 6].Value = result[i].Titulo;   
-                    worksheet.Cells[i+2, 7].Value = result[i].NombreFirmanteUno;
-                    worksheet.Cells[i+2, 8].Value = result[i].NombreFirmanteDos;
-                    worksheet.Cells[i+2, 9].Value = result[i].NombreFirmanteTres;
+                    worksheet.Cells[i+2, 3].Value = result[i].NombreFormato;
+                    worksheet.Cells[i+2, 4].Value = result[i].Tipo;
+                    worksheet.Cells[i+2, 5].Value = result[i].Titulo;   
+                    worksheet.Cells[i+2, 6].Value = result[i].NombreFirmanteUno;
+                    worksheet.Cells[i+2, 7].Value = result[i].NombreFirmanteDos;
+                    worksheet.Cells[i+2, 8].Value = result[i].NombreFirmanteTres;
                 }
 
                 worksheet.Cells[1, 2, worksheet.Dimension.End.Row, 3].Style.Numberformat.Format = "yyyy-mm-dd";
