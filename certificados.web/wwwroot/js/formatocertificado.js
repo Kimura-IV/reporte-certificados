@@ -152,7 +152,7 @@ async function handleAgregarFormato(event) {
 
     try {
 
-        const errorPlantilla = await validSizeImages("linea-grafica", plantillaWidth, plantillaHeight, "linea grafica");
+        const errorPlantilla = await validSizePlantilla();
         if (errorPlantilla) {
             Utils.showToast(errorPlantilla, 'danger');
             return;
@@ -237,6 +237,7 @@ async function handleAgregarFormato(event) {
             }
 
             limpiarFormularioFormato();
+            limpiarSelects();
             cargarDatosFormatos();
 
             // Cambiar a la pestaña de tabla
@@ -328,6 +329,7 @@ async function handleEditarFormato(event) {
 
         if (response.cod === Utils.COD_OK) {
             Utils.showToast("Formato actualizado exitosamente", 'info');
+            limpiarSelects();
             cargarDatosFormatos();
             const modal = bootstrap.Modal.getInstance(document.getElementById('modal-editar'));
             modal.hide();
@@ -363,6 +365,7 @@ async function eliminarFormato(id) {
                 $('#tabla-formato').DataTable().clear().destroy();
             }
 
+            limpiarSelects();
             cargarDatosFormatos();
         } else {
             const messageClient = response.message || "Error al eliminar el formato.";
@@ -391,14 +394,25 @@ function convertirABase64(file) {
 
 // Funcion para limpiar formulario
 function limpiarFormularioFormato() {
-    console.log('taka')
     const form = document.getElementById('form-formato');
     if (form) {
         form.reset(); // Restablecer formulario
         form.classList.remove('was-validated'); // Eliminar validación
     }
 }
+function limpiarSelects() {
+    const selects = document.querySelectorAll("select");
 
+    selects.forEach(select => {
+
+        for (let i = select.options.length - 1; i >= 0; i--) {
+            const option = select.options[i];
+            if (option.value !== "") {
+                option.remove();
+            }
+        }
+    });
+}
 // Inicializar validación
 function habilitarValidacionFormato() {
     'use strict';
@@ -442,6 +456,32 @@ async function cargarDecanatos() {
     }
 }
 
+function validSizePlantilla() {
+    return new Promise((resolve) => {
+        const filePlantilla = $("#linea-grafica")[0].files[0];
+        if (!filePlantilla) {
+            resolve(null);
+            return;
+        }
+
+        const img = new Image();
+        img.src = URL.createObjectURL(filePlantilla);
+
+        img.onload = function () {
+            URL.revokeObjectURL(img.src);
+            if (img.width <= img.height ) {
+                resolve(`La Linea gráfica debe tener un ancho de mayor al alto.`);
+            } else {
+                resolve(null);
+            }
+        };
+
+        img.onerror = function () {
+            URL.revokeObjectURL(img.src);
+            resolve('No se pudo cargar la imagen para validar tamaño.');
+        };
+    });
+}
 function validSizeImages(inputSelector, requiredWidth, requiredHeight, modelo) {
     return new Promise((resolve) => {
         const filePlantilla = $(`#${inputSelector}`)[0].files[0];
@@ -455,8 +495,8 @@ function validSizeImages(inputSelector, requiredWidth, requiredHeight, modelo) {
 
         img.onload = function () {
             URL.revokeObjectURL(img.src);
-            if (img.width !== requiredWidth || img.height !== requiredHeight) {
-                resolve(`La ${modelo} debe tener un ancho de ${requiredWidth}px y un alto de ${requiredHeight}px.`);
+            if (img.width != img.height) {
+                resolve(`La ${modelo} debe tener un ancho igual al alto`);
             } else {
                 resolve(null);
             }

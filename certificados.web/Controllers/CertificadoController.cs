@@ -1,6 +1,7 @@
 ﻿using certificados.dal.DataAccess;
 using certificados.models;
 using certificados.models.Context;
+using certificados.models.Dtos;
 using certificados.models.Entitys;
 using certificados.models.Entitys.dbo;
 using certificados.services.Services;
@@ -31,7 +32,7 @@ namespace certificados.web.Controllers
         private readonly AppDbContext context;
 
         public CertificadoController(CertificadosService certificadosService, EventoService evento, GrupoService grupoService,
-            GrupoPersonaService grupoPersonaService, DocenteService docenteService, FormatoCertificadoService formato, PersonaService personaService, 
+            GrupoPersonaService grupoPersonaService, DocenteService docenteService, FormatoCertificadoService formato, PersonaService personaService,
             DecanatoService decanatoService, AppDbContext context)
         {
             this.certificadosService = certificadosService;
@@ -149,33 +150,13 @@ namespace certificados.web.Controllers
         }
 
         [HttpPost("obtener")]
-        public ActionResult<ResponseApp> getCertificates([FromBody] FiltroCertificadoDTO filtro)
+        public ActionResult<ResponseApp> getCertificates([FromBody] FiltroReporteDto filtro)
         {
-            var iQueryableCertificado = GenerateIQueryable(filtro);
-            var data = iQueryableCertificado.Select(x => new
-            {
-               
-                
-                    x.Estado,
-                    x.FCreacion,
-                    x.FModificacion,
-                    x.IdCertificado,
-                    x.IdFormato,
-                    x.TformatoCertificado,
-                    x.Tipo,
-                    x.Titulo,
-                    x.UsuarioActualizacion,
-                    x.UsuarioIngreso,
-                    x.TformatoCertificado.NombreFirmanteUno,
-                    x.TformatoCertificado.NombreFirmanteDos,
-                    x.TformatoCertificado.NombreFirmanteTres,
-                    pdfBase64 = Convert.ToBase64String(x.Imagen)               
-            }).ToList();
-            return Ok(Utils.OkResponse(data));
+            return certificadosService.GetReporteCertificado(filtro);
         }
         [HttpGet("GetFiltrosCertificados")]
         public ActionResult<ResponseApp> GetFiltrosCertificados()
-        {                
+        {
             return Ok(certificadosService.GetFiltros());
         }
         /*
@@ -228,7 +209,7 @@ namespace certificados.web.Controllers
             }
             return Ok(certificadosService.ElminarCertificado(idCertificado));
         }
-       
+
         [HttpPost("email/notificar")]
         public ActionResult<ResponseApp> enviarMail([FromBody] Dictionary<string, object> request)
         {
@@ -264,7 +245,7 @@ namespace certificados.web.Controllers
         {
             if (dto == null)
                 return BadRequest(Utils.BadResponse(CONSTANTES.MESSAGE_DATA_ERRORS));
-            
+
             var certificadoRq = certificadosService.CertificadosById(dto.idCertificado);
             if (!certificadoRq.Cod.Equals(CONSTANTES.COD_OK))
             {
@@ -273,13 +254,14 @@ namespace certificados.web.Controllers
             Tcertificado certificado = CertificadoMapper.toEntity(certificadoRq.Data);
 
             List<Tdocente> Listadocente = new List<Tdocente>();
-            foreach (var docent in dto.docentes) {
+            foreach (var docent in dto.docentes)
+            {
                 var requestDocente = docenteService.ObtenerDocentesByCedula(docent);
                 if (!requestDocente.Cod.Equals(CONSTANTES.COD_OK))
                     continue;
                 Tdocente docente = DocenteMapper.toEntity(requestDocente.Data);
                 Listadocente.Add(docente);
-                
+
             }
 
             return new ResponseApp();
@@ -330,7 +312,7 @@ namespace certificados.web.Controllers
 
                 using (var memoryStream = new MemoryStream())
                 {
-                    var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate());
+                    var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate(), 100f, 100f, 60f, 80f);
                     var writer = iTextSharp.text.pdf.PdfWriter.GetInstance(document, memoryStream);
                     document.Open();
 
@@ -348,9 +330,11 @@ namespace certificados.web.Controllers
                     {
                         var logoImage = iTextSharp.text.Image.GetInstance((byte[])dataFormato.LogoUG);
                         logoImage.Alignment = iTextSharp.text.Image.ALIGN_CENTER;
+                        logoImage.ScaleAbsolute(120, 120);
+             
                         //logoImage.ScaleAbsolute(250f, 60f);
                         document.Add(logoImage);
-                        agregarSaltodeLinea(document,1);
+                        agregarSaltodeLinea(document, 1);
                     }
 
                     // Agregar nombre del decanato
@@ -400,13 +384,13 @@ namespace certificados.web.Controllers
                     {
                         var qrImage = iTextSharp.text.Image.GetInstance((byte[])dataFormato.Qr);
                         qrImage.ScaleAbsolute(80, 80);
-                        qrImage.SetAbsolutePosition(50, 80); // Posición X, Y para el QR
+                        qrImage.SetAbsolutePosition(120f, 150); // Posición X, Y para el QR
                         document.Add(qrImage);
                     }
 
                     // Posiciones iniciales para los firmantes
-                    float startX = 300; // Posición X inicial para el primer firmante
-                    float startY = 100; // Posición Y común para todos los firmantes
+                    float startX = 250; // Posición X inicial para el primer firmante
+                    float startY = 120; // Posición Y común para todos los firmantes
                     float lineHeight = 20;
                     float spacing = 180; // Espacio horizontal entre firmantes
 
@@ -473,7 +457,7 @@ namespace certificados.web.Controllers
                         certificadosService.EnviarCertificadoIndividual(cedula, pdfBytes);
                         return Ok(new ResponseApp { Cod = "OK", Message = "CERTIFICADO ENVIADO AL CORREO ELECTRÓNICO CON ÉXITO", Data = "" });
                     }
-                    else 
+                    else
                     {
                         return Ok(new ResponseApp { Cod = "OK", Message = "CERTIFICADO GENERADO CON ÉXITO", Data = base64String });
                     }
@@ -492,54 +476,26 @@ namespace certificados.web.Controllers
                 document.Add(new Paragraph("\n"));
             }
         }
-        private IQueryable<Tcertificado> GenerateIQueryable(FiltroCertificadoDTO filtro)
-        {
-            var certificado = context.Tcertificado.AsQueryable();
-            if (filtro == null) return certificado;
-
-
-            var predicate = PredicateBuilder.New<Tcertificado>(true);
-            if (!string.IsNullOrEmpty(filtro.Tipo))
-            {
-                var tipoUpper = filtro.Tipo.ToUpper();
-                predicate = predicate.And(x => !string.IsNullOrEmpty(x.Tipo) && x.Tipo.ToUpper() == tipoUpper);
-            }
-
-            if (filtro.Estado != null)
-            {
-                predicate = predicate.And(x => x.Estado == filtro.Estado);
-            }
-
-            if (filtro.Emision != null)
-            {
-                predicate = predicate.And(x => x.FCreacion >= filtro.Emision.Value.Date && x.FCreacion < filtro.Emision.Value.Date.AddDays(1));
-            }
-
-            if (filtro.Plantilla != 0)
-            {
-                predicate = predicate.And(x => x.IdFormato == filtro.Plantilla);
-            }
-
-            if (!string.IsNullOrEmpty(filtro.Creador))
-            {
-                var creadorUpper = filtro.Creador.ToUpper();
-                predicate = predicate.And(x => !string.IsNullOrEmpty(x.UsuarioIngreso) && x.UsuarioIngreso == creadorUpper);
-            }
-            if (!string.IsNullOrEmpty(filtro.Firmante))
-            {
-                var firmanteUpper = filtro.Firmante.ToUpper();
-                predicate = predicate.And(x =>
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteUno) &&  x.TformatoCertificado.CargoFirmanteUno.ToUpper().Equals(firmanteUpper) ||
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteDos) && x.TformatoCertificado.CargoFirmanteDos.ToUpper().Equals(firmanteUpper) ||
-                !string.IsNullOrEmpty(x.TformatoCertificado.CargoFirmanteTres) && x.TformatoCertificado.CargoFirmanteTres.ToUpper().Equals(firmanteUpper));
-            }
-
-            return certificado.AsExpandable().Where(predicate);
-        }
         [HttpPost("Estadistica")]
-        public ResponseApp GetEstadisticas([FromBody] FiltroEstadistica filtro)
+        public ResponseApp GetEstadisticas([FromBody] FiltroReporteDto filtro)
         {
             return certificadosService.GetEstadistica(filtro);
+        }
+        [HttpPost("DescargarExcelReporte")]
+        public IActionResult GenerarExcelReporte([FromBody] FiltroReporteDto filtro)
+        {
+            var excelBytes = certificadosService.GenerarExcelReporte(filtro);
+            return File(excelBytes,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "reporte.xlsx");
+        }
+        [HttpPost("DescargarExcelReporteEstadistica")]
+        public IActionResult GenerarExcelEstadisitca([FromBody] EstadisticaReporteExcel estadisticaReporteExcel)
+        {
+            var excelBytes = certificadosService.GenerarCertificadoEstadistica(estadisticaReporteExcel);
+            return File(excelBytes,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "reporte.xlsx");
         }
     }
 }

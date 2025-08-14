@@ -14,64 +14,74 @@
         <div class="row">
 
             <div class="col-12 col-md-4 mb-3">
-                <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
-                <input type="date" id="fechaInicio" class="form-control" />
+                <label for="fechaInicioEstadistica" class="form-label">Fecha de Inicio</label>
+                <input type="date" id="fechaInicioEstadistica" class="form-control" placeholder="Seleccione fecha de Inicio" />
 
             </div>
             <div class="col-12 col-md-4 mb-3">
-                <label for="fechaFin" class="form-label">Fecha de Fin</label>
-                <input type="date" id="fechaFin" class="form-control" />
+                <label for="fechaFinEstadistica" class="form-label">Fecha de Fin</label>
+                <input type="date" id="fechaFinEstadistica" class="form-control" placeholder="Seleccione fecha de Fin" />
             </div>
             <div class="col-12 col-md-4 mb-3">
                 <label for="plantillaEstadistica" class="form-label">Plantilla</label>
-                <select id="plantillaEstadistica" class="form-select">
-                    <option selected disabled value="">Seleccione una plantilla</option>
+                 <select multiple  id="plantillaEstadistica" class="form-select select2">
                 </select>
             </div>
 
             <div class="col-12 col-md-4 mb-3">
                 <label for="firmanteEstadistica" class="form-label">Firmante</label>
-                <select id="firmanteEstadistica" class="form-select">
-                    <option selected disabled value="">Seleccione un firmante</option>
+                 <select multiple  id="firmanteEstadistica" class="form-select select2">
                 </select>
             </div>
 
             <div class="col-12 col-md-4 mb-3">
                 <label for="tipoEstadistica" class="form-label">Tipo Certificado</label>
-                <select id="tipoEstadistica" class="form-select">
-                    <option selected disabled value="">Seleccione un Tipo Certificado</option>
+                 <select multiple  id="tipoEstadistica" class="form-select select2">
                 </select>
             </div>
 
             <div class="col-12 col-md-4 mb-3">
                 <label for="creadorEstadistica" class="form-label">Usuario Creador</label>
-                <select id="creadorEstadistica" class="form-select">
-                    <option selected disabled value="">Seleccione un creador</option>
+                 <select multiple  id="creadorEstadistica" class="form-select select2">
                 </select>
             </div>
 
             <div class="col-12 col-md-4 mb-3">
                 <label for="estadoEstadistica" class="form-label">Estado</label>
-                <select id="estadoEstadistica" class="form-select">
-                    <option selected disabled value="">Seleccione un estado</option>
+                 <select multiple  id="estadoEstadistica" class="form-select select2">
                     <option value="true">Activo</option>
                     <option value="false">Inactivo</option>
                 </select>
             </div>
         </div>        
-        <div class="d-flex  justify-content-end align-items-center">
-            
+        <div class="d-flex  justify-content-end align-items-center gap-2">
+            <button class="btn btn-success" id="btnDescargarExcelEstadistica"
+                    data-bs-toggle="modal" data-bs-target="#modalConfirmacionDescarga">
+                <i class="bi bi-file-earmark-spreadsheet-fill"></i> Descargar Excel
+            </button>
             <button class="btn btn-primary" id="btnLimpiarEstadistica">
                 <i class="bi bi-trash">Limpiar Filtros</i>
             </button>
         </div>
         <div class="tab-pane fade show active m-1" id="tablaEstadistica" role="tabpanel" aria-labelledby="tabla-tab">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
                     <canvas id="plantillaEstadisticas"></canvas>
+                    <div class="col-12 col-md-4 mt-3">
+                        <select id="tipoPlantillaEstadistica" class="form-select select2">
+                            <option selected value="pie">Gráfico Pie</option>
+                            <option  value="bar">Gráfico Barras</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
                     <canvas id="firmanteEstadisticas"></canvas>
+                    <div class="col-12 col-md-4 mt-3">
+                        <select id="tipoFirmanteEstadistica" class="form-select select2">
+                            <option selected value="bar">Gráfico Barras</option>
+                            <option value="pie">Gráfico Pie</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-md-3">
 
@@ -79,7 +89,7 @@
                 <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
                     <canvas id="lineaTiempoEstadisticas"></canvas>
                     <div class="col-12 col-md-4 mt-3">
-                        <select id="tipoTiempoEstadistica" class="form-select">
+                         <select   id="tipoTiempoEstadistica" class="form-select select2">
                             <option selected  value="dia">Dia</option>
                             <option value="semana">Semana</option>
                             <option value="anio">Año</option>
@@ -92,4 +102,30 @@
         </div>
 
     </div> 
+</div>
+<div class="modal fade" id="modalConfirmacionDescarga" tabindex="-1" aria-labelledby="modalLabelDescarga" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabelDescarga">Confirmar descarga</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body d-flex flex-column ">
+                <label for="tiposExcelsEstaditica" class="form-label">Seleccione los gráficos </label>
+                <select multiple id="tiposExcelsEstaditica" class="form-select select2">
+                    <option value="plantillaPie">Gráfica Plantillas Pie</option>
+                    <option value="plantillaBarra">Gráfica Plantillas Barra</option>
+                    <option value="firmanteBarra">Gráfica Firmantes Barra</option>
+                    <option value="firmantePie">Gráfica Firmantes Pie</option>
+                    <option value="dia">Gráfica Dias</option>
+                    <option value="semana">Gráfica Semanas</option>
+                    <option value="anio">Gráfica Años</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="confirmarDescargaExcelEstaditica">Descargar</button>
+            </div>
+        </div>
+    </div>
 </div>
