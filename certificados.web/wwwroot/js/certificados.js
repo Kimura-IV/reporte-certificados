@@ -23,6 +23,10 @@ async function cargarDatosCertificados() {
     if (filtroCargado == null) {
         resetObject()
     }
+
+    if ($.fn.DataTable.isDataTable('#tabla-certificados')) {
+        $('#tabla-certificados').DataTable().clear().destroy();
+    }
     try {
         const response = await Utils.httpRequest(
             `${Utils.path}/certificado/obtener`,
