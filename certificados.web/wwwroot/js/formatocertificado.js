@@ -237,6 +237,7 @@ async function handleAgregarFormato(event) {
             }
 
             limpiarFormularioFormato();
+            limpiarSelects();
             cargarDatosFormatos();
 
             // Cambiar a la pestaña de tabla
@@ -328,6 +329,7 @@ async function handleEditarFormato(event) {
 
         if (response.cod === Utils.COD_OK) {
             Utils.showToast("Formato actualizado exitosamente", 'info');
+            limpiarSelects();
             cargarDatosFormatos();
             const modal = bootstrap.Modal.getInstance(document.getElementById('modal-editar'));
             modal.hide();
@@ -363,6 +365,7 @@ async function eliminarFormato(id) {
                 $('#tabla-formato').DataTable().clear().destroy();
             }
 
+            limpiarSelects();
             cargarDatosFormatos();
         } else {
             const messageClient = response.message || "Error al eliminar el formato.";
@@ -391,14 +394,25 @@ function convertirABase64(file) {
 
 // Funcion para limpiar formulario
 function limpiarFormularioFormato() {
-    console.log('taka')
     const form = document.getElementById('form-formato');
     if (form) {
         form.reset(); // Restablecer formulario
         form.classList.remove('was-validated'); // Eliminar validación
     }
 }
+function limpiarSelects() {
+    const selects = document.querySelectorAll("select");
 
+    selects.forEach(select => {
+
+        for (let i = select.options.length - 1; i >= 0; i--) {
+            const option = select.options[i];
+            if (option.value !== "") {
+                option.remove();
+            }
+        }
+    });
+}
 // Inicializar validación
 function habilitarValidacionFormato() {
     'use strict';

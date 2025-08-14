@@ -127,6 +127,11 @@ async function cargarDatosCertificados() {
                 tooltipTriggerList.forEach(function (tooltipTriggerEl) {
                     new bootstrap.Tooltip(tooltipTriggerEl);
                 });
+                $('#tabla-certificados').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json'
+                    }
+                });
             } else {
                 tablaBody.innerHTML = '<tr><td colspan="7" class="text-center">No se encontraron certificados.</td></tr>';
                 Utils.showToast('NO EXISTEN CERTIFICADOS REGISTRADOS', 'info');
