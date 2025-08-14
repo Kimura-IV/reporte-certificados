@@ -26,7 +26,7 @@ namespace certificados.dal.DataAccess
 
                 try
                 {
-                    tgrupo.IdGrupo = context.Tgrupo.Count() + 1;
+                    tgrupo.IdGrupo = context.Tgrupo.Select(x => x.IdGrupo).OrderByDescending(x => x).FirstOrDefault() + 1; ;
                     tgrupo.FCreacion = Utils.timeParsed(DateTime.Now);
                     tgrupo.FModificacion = Utils.timeParsed(DateTime.Now);
                     context.Tgrupo.Add(tgrupo);

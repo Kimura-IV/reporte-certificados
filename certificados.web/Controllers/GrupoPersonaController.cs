@@ -122,7 +122,7 @@ namespace certificados.web.Controllers
                             continue;
                         }
 
-                        tgrupoPersonaEntity.IdGrupoPersona = context.TgrupoPersona.Count() + 1;
+                        tgrupoPersonaEntity.IdGrupoPersona = context.TgrupoPersona.Select(x => x.IdGrupoPersona).OrderByDescending(x => x).FirstOrDefault() + 1; ;
                         var responseGrupo = grupoPersonaService.InsertarPersona(tgrupoPersonaEntity);
                         if (responseGrupo.Cod.Equals(CONSTANTES.COD_OK)) {
                             cedulasInsertadas.Add(cedula);

@@ -434,10 +434,10 @@ namespace certificados.web.Controllers
                     TformatoCertificado formatoEntity = FormatoCertificadoMapper.convertEntity(formato.Data);
 
                     var idUsuario = ((JsonElement)request["idUsuario"]).ToString();
-
+                    var idCertificado = context.Tcertificado.Select(x => x.IdCertificado).OrderByDescending(x => x).FirstOrDefault()+1;
                     var tcertificado = new Tcertificado
                     {
-                        IdCertificado = context.Tcertificado.Count() + 1,
+                        IdCertificado = idCertificado,
                         Titulo = $"{dataPersona.Apellidos} {dataPersona.Nombres}",
                         Imagen = pdfBytes,
                         IdFormato = idFormato,
